@@ -1,17 +1,17 @@
-package server;
+package main.server;
 
 import java.io.*;
 import java.net.*;
 
 public class TCPServer{
     public static void main(String[] args) throws Exception{
-        System.out.println("derp");
-
         String clientSentence;
         String capitalizedSentence;
 
         // Create welcoming socket at port 6789
         ServerSocket welcomeSocket = new ServerSocket(6789);
+
+        System.out.println("Server running");
 
         while(true){
             // Wait on welcoming socket for contact by a client
