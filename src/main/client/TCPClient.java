@@ -15,6 +15,7 @@ public class TCPClient {
 
         // Create output stream attached to socket
         DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+//        BufferedWriter outToServer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 
         // Create input stream attached to socket
         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
