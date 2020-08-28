@@ -1,37 +1,48 @@
 package main.server;
 
+import com.sun.security.ntlm.Server;
+import main.rfcProtocol;
+
 import java.io.*;
 import java.net.*;
 
 public class TCPServer{
-    public static void main(String[] args) throws Exception{
-        String clientSentence;
-        String capitalizedSentence;
 
-        // Create welcoming socket at port 6789
-        ServerSocket welcomeSocket = new ServerSocket(6789);
+    public static void main(String[] args) throws IOException {
 
-        System.out.println("Server running");
-
-        while(true){
-            // Wait on welcoming socket for contact by a client
-            Socket connectionSocket = welcomeSocket.accept();
-
-            // Create input stream, attached to socket
-            BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-
-            // Create output stream, attached to socket
-            DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-
-            // Read in line from socket
-            clientSentence = inFromClient.readLine();
-            capitalizedSentence = clientSentence.toUpperCase();
-
-            // Write out line to socket
-            outToClient.writeBytes(capitalizedSentence);
-
-            // End of while loop, loop back and wait for another client connection
+        if (args.length != 1) {
+            System.err.println("Usage: java KnockKnockServer <port number>");
+            System.exit(1);
         }
 
+        int portNumber = Integer.parseInt(args[0]);
+
+        try (
+                ServerSocket serverSocket = new ServerSocket(portNumber);
+                Socket clientSocket = serverSocket.accept();
+                PrintWriter out =
+                        new PrintWriter(clientSocket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(clientSocket.getInputStream()));
+        ) {
+
+            String inputLine, outputLine;
+
+            // Initiate conversation with client
+            rfcProtocol kkp = new rfcProtocol();
+            outputLine = kkp.processInput(null);
+            out.println(outputLine);
+
+            while ((inputLine = in.readLine()) != null) {
+                outputLine = kkp.processInput(inputLine);
+                out.println(outputLine);
+                if (outputLine.equals("Bye."))
+                    break;
+            }
+        } catch (IOException e) {
+            System.out.println("Exception caught when trying to listen on port "
+                    + portNumber + " or listening for a connection");
+            System.out.println(e.getMessage());
+        }
     }
 }

@@ -3,33 +3,46 @@ import java.io.*;
 import java.net.*;
 
 public class TCPClient {
-    public static void main(String argv[]) throws Exception {
-        String sentence;
-        String modifiedSentence;
+    public static void main(String[] args) throws IOException {
 
-        // Create input stream
-        BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
+        if (args.length != 2) {
+            System.err.println(
+                    "Usage: java EchoClient <host name> <port number>");
+            System.exit(1);
+        }
 
-        // Create client socket, connect to server
-        Socket clientSocket = new Socket("127.0.0.1", 6789);
+        String hostName = args[0];
+        int portNumber = Integer.parseInt(args[1]);
 
-        // Create output stream attached to socket
-        DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-//        BufferedWriter outToServer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+        try (
+                Socket kkSocket = new Socket(hostName, portNumber);
+                PrintWriter out = new PrintWriter(kkSocket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(kkSocket.getInputStream()));
+        ) {
+            BufferedReader stdIn =
+                    new BufferedReader(new InputStreamReader(System.in));
+            String fromServer;
+            String fromUser;
 
-        // Create input stream attached to socket
-        BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            while ((fromServer = in.readLine()) != null) {
+                System.out.println("Server: " + fromServer);
+                if (fromServer.equals("Bye."))
+                    break;
 
-        sentence = inFromUser.readLine();
-
-        // Send line to server
-        outToServer.writeBytes(sentence + '\n');
-
-        // Read line from server
-        modifiedSentence = inFromServer.readLine();
-
-        System.out.println("FROM SERVER: " + modifiedSentence);
-
-        clientSocket.close();
+                fromUser = stdIn.readLine();
+                if (fromUser != null) {
+                    System.out.println("Client: " + fromUser);
+                    out.println(fromUser);
+                }
+            }
+        } catch (UnknownHostException e) {
+            System.err.println("Don't know about host " + hostName);
+            System.exit(1);
+        } catch (IOException e) {
+            System.err.println("Couldn't get I/O for the connection to " +
+                    hostName);
+            System.exit(1);
+        }
     }
 }
