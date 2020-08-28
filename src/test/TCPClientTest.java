@@ -10,29 +10,33 @@ public class TCPClientTest {
     // Client tests
 
     @Test
-    public void testGenerateUserCommandTextWithNoUserID(){
+    public void testGenerateUSERCommandTextWithNoUserID(){
         // Checks that the data from the client is correctly formatted for USER command before
         // request is sent
         // Format: USER [<space> args] <Null>
 
         TCPClient tcpClient = new TCPClient();
 
-        String commandText = tcpClient.generateUserCommandText();
+        String commandText = tcpClient.generateUSERCommandText();
 
         assertEquals("USER \0", commandText);
     }
 
     @Test
-    public void testGenerateUserCommandTextWithUserID(){
+    public void testGenerateUSERCommandTextWithUserID(){
         // Checks that the data from the client is correctly formatted for USER command before
         // request is sent
         // Format: USER [<space> args] <Null>
 
         TCPClient tcpClient = new TCPClient();
 
-        String commandText = tcpClient.generateUserCommandText("user1234");
+        String commandText = tcpClient.generateUSERCommandText("user1234");
 
         assertEquals("USER user1234\0", commandText);
     }
+
+    // Test cases for server
+
+
 
 }

@@ -46,12 +46,12 @@ public class TCPClient {
         }
     }
 
-    public String generateUserCommandText(String args){
+    public String generateUSERCommandText(String args){
         String commandText = "USER " + args + "\0";
         return commandText;
     }
 
-    public String generateUserCommandText(){
-        return generateUserCommandText("");
+    public String generateUSERCommandText(){
+        return generateUSERCommandText("");
     }
 }
