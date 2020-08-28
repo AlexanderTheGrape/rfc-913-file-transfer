@@ -8,9 +8,19 @@ public class TCPClientTest {
     private TCPClient tcpClient = new TCPClient();
 
     @Test
-    public void testClientFileSend(){
-        // TODO read what I should check for in my first test
-        assertEquals("something", "also something");
+    public void testUSERCommandFromClientWithNoUserID(){
+        // Checks that the data from the client is correctly formatted for USER command before
+        // request is sent
+        // Format: USER [<space> args] <Null>
+
+        /* If the remote system does not have user-id's then you should
+         send an identification such as your personal name or host name
+         as the argument, and the remote system would reply with '+'.
+        */
+
+        String commandText = TCPClient.userCommand(args);
+
+        assertEquals("USER " + "\0", "commandText");
     }
 
 }
