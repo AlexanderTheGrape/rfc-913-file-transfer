@@ -10,20 +10,29 @@ public class TCPClientTest {
     // Client tests
 
     @Test
-    public void testgenerateUserCommandTextWithNoUserID(){
+    public void testGenerateUserCommandTextWithNoUserID(){
         // Checks that the data from the client is correctly formatted for USER command before
         // request is sent
         // Format: USER [<space> args] <Null>
 
-        /* If the remote system does not have user-id's then you should
-         send an identification such as your personal name or host name
-         as the argument, and the remote system would reply with '+'.
-        */
         TCPClient tcpClient = new TCPClient();
 
         String commandText = tcpClient.generateUserCommandText();
 
-        assertEquals("USER " + "\0", commandText);
+        assertEquals("USER \0", commandText);
+    }
+
+    @Test
+    public void testGenerateUserCommandTextWithUserID(){
+        // Checks that the data from the client is correctly formatted for USER command before
+        // request is sent
+        // Format: USER [<space> args] <Null>
+
+        TCPClient tcpClient = new TCPClient();
+
+        String commandText = tcpClient.generateUserCommandText("user1234");
+
+        assertEquals("USER user1234\0", commandText);
     }
 
 }
