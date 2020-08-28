@@ -7,8 +7,10 @@ import static org.junit.Assert.assertEquals;
 public class TCPClientTest {
     private TCPClient tcpClient = new TCPClient();
 
+    // Client tests
+
     @Test
-    public void testUSERCommandFromClientWithNoUserID(){
+    public void testgenerateUserCommandTextWithNoUserID(){
         // Checks that the data from the client is correctly formatted for USER command before
         // request is sent
         // Format: USER [<space> args] <Null>
@@ -17,10 +19,11 @@ public class TCPClientTest {
          send an identification such as your personal name or host name
          as the argument, and the remote system would reply with '+'.
         */
+        TCPClient tcpClient = new TCPClient();
 
-        String commandText = TCPClient.userCommand();
+        String commandText = tcpClient.generateUserCommandText();
 
-        assertEquals("USER " + "\0", "commandText");
+        assertEquals("USER " + "\0", commandText);
     }
 
 }
