@@ -45,4 +45,13 @@ public class TCPClient {
             System.exit(1);
         }
     }
+
+    public String userCommand(String args){
+        String commandText = "";
+        return commandText;
+    }
+
+    public String userCommand(){
+        return userCommand("");
+    }
 }

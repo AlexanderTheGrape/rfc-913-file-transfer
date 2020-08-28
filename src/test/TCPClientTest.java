@@ -18,7 +18,7 @@ public class TCPClientTest {
          as the argument, and the remote system would reply with '+'.
         */
 
-        String commandText = TCPClient.userCommand(args);
+        String commandText = TCPClient.userCommand();
 
         assertEquals("USER " + "\0", "commandText");
     }
