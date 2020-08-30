@@ -51,6 +51,14 @@ public class TCPClientTest {
         assertEquals("ACCT acct1\0", commandText);
     }
 
+    @Test
+    public void testGeneratePASSCommandTextWithPassword(){
+        TCPClient tcpClient = new TCPClient();
+
+        String commandText = tcpClient.generatePASSCommandText("pass1");
+        assertEquals("PASS pass1\0", commandText);
+    }
+
 
 
 }
