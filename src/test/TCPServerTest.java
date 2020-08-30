@@ -54,4 +54,16 @@ public class TCPServerTest {
         responseText = tcpServer.generateResponse(stringFromClient);
         assertEquals("! Account valid, logged-in", responseText);
     }
+
+    @Test
+    public void testGenerateResponseToACCTCommandWithArgAndRequiringPassword(){
+        TCPServer tcpServer = new TCPServer();
+
+        String stringFromClient = "USER user456\0";
+        String responseText = tcpServer.generateResponse(stringFromClient);
+
+        stringFromClient = "ACCT acct2\0";
+        responseText = tcpServer.generateResponse(stringFromClient);
+        assertEquals("+Account valid, send password", responseText);
+    }
 }

@@ -35,7 +35,6 @@ public class TCPClientTest {
         assertEquals("USER user1234\0", commandText);
     }
 
-    // Test cases for server
 
 
 
