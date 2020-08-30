@@ -59,7 +59,7 @@ public class TCPServerTest {
     public void testGenerateResponseToACCTCommandWithArgAndRequiringPassword(){
         TCPServer tcpServer = new TCPServer();
 
-        String stringFromClient = "USER user456\0";
+        String stringFromClient = "USER user789\0";
         String responseText = tcpServer.generateResponse(stringFromClient);
 
         stringFromClient = "ACCT acct2\0";
