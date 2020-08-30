@@ -48,10 +48,11 @@ public class TCPServer{
         }
     }
 
-    public String generateResponse(String inputFromUser){
-        String[] splitString = inputFromUser.split(" ");
+    public String generateResponse(String stringFromClient){
+        String[] splitString = stringFromClient.split(" ");
         String command = splitString[0];
         String args = splitString[1];
+        args = args.replace("\0", "");
 
         switch (command){
             case "USER":
@@ -62,7 +63,7 @@ public class TCPServer{
 
     }
 
-    public String generateUSERResponse(String usernameFromUser){
+    public String generateUSERResponse(String usernameFromClient){
         // Examples of expected input:
 
         // Check if the user-id is correct, by being in the list of user-id's in the txt file
@@ -83,7 +84,7 @@ public class TCPServer{
             String password = null;
 
 
-            if (username.contains(usernameFromUser)){
+            if (username.equals(usernameFromClient)){
                 usernameFound = true;
 
                 if (splitString.length > 1){
