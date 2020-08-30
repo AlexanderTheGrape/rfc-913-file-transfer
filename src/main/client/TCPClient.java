@@ -54,4 +54,13 @@ public class TCPClient {
     public String generateUSERCommandText(){
         return generateUSERCommandText("");
     }
+
+    public String generateACCTCommandText(String args){
+        String commandText = "ACCT " + args + "\0";
+        return commandText;
+    }
+
+    public String generateACCTCommandText(){
+        return generateACCTCommandText("");
+    }
 }
