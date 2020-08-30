@@ -11,6 +11,8 @@ import java.util.ArrayList;
 public class TCPServer{
     private String currentUsername = null;
     private String currentAccount = null;
+    private String currentPassword = null;
+    private Boolean currentlyLoggedIn = false;
 
     public static void main(String[] args) throws IOException {
 
@@ -61,6 +63,8 @@ public class TCPServer{
                 return generateUSERResponse(args);
             case "ACCT":
                 return generateACCTResponse(args);
+            case "PASS":
+                return generatePASSResponse(args);
             default:
                 return "I don't know what command that is!";
         }
@@ -89,6 +93,7 @@ public class TCPServer{
                 } else {
                     // no password required
                     this.currentUsername = username;
+                    this.currentlyLoggedIn = true;
                     return String.format("!%s logged in", username);
                 }
             }
@@ -120,9 +125,45 @@ public class TCPServer{
                         } else {
                             // no password required
                             this.currentAccount = account;
+                            this.currentlyLoggedIn = true;
                             return "! Account valid, logged-in";
                         }
                     }
+                }
+            }
+        }
+        return "-Invalid account, try again";
+    }
+
+    public String generatePASSResponse(String passwordFromClient){
+        //Check if there is an account for the given username
+        // Read lines from file, store in list
+        ArrayList fileLines = new ArrayList();
+        FileReader.readLines("loginDetails.txt", fileLines);
+
+        for(int i = 0; i < fileLines.size(); i++){
+            String line  = fileLines.get(i).toString();
+            String[] splitString = line.split(" ");
+
+            String account;
+            if (this.currentUsername.equals(splitString[0])) {
+                if (splitString.length > 1) {
+                    account = splitString[1];
+                    if (splitString.length > 2) {
+                        // This username has an associated password
+                        if (passwordFromClient.equals(splitString[2])) {
+                            if (this.currentAccount.equals(splitString[1])) {
+                                this.currentlyLoggedIn = true;
+                                return "! Logged in";
+                            } else if (this.currentAccount == null){
+                                this.currentPassword = passwordFromClient;
+                                return "+Send account";
+                            }
+                        } else {
+                            return "-Wrong password, try again";
+                        }
+                    }
+
                 }
             }
         }
