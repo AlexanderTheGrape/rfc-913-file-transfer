@@ -36,6 +36,6 @@ public class TCPServerTest {
         TCPServer tcpServer = new TCPServer();
         String stringFromClient = "ACCT \0";
         String responseText = tcpServer.generateResponse(stringFromClient);
-        assertEquals("Invalid account, try again", responseText);
+        assertEquals("-Invalid account, try again", responseText);
     }
 }

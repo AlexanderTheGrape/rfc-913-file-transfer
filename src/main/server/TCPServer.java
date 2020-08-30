@@ -57,23 +57,19 @@ public class TCPServer{
         switch (command){
             case "USER":
                 return generateUSERResponse(args);
+            case "ACCT":
+                return generateACCTResponse(args);
             default:
                 return "I don't know what command that is!";
         }
 
     }
 
-    public String generateUSERResponse(String args){
-        // Examples of expected input:
-
+    public String generateUSERResponse(String arg){
         // Check if the user-id is correct, by being in the list of user-id's in the txt file
-
         // Read lines from file, store in list
         ArrayList fileLines = new ArrayList();
         FileReader.readLines("loginDetails.txt", fileLines);
-
-        Boolean usernameFound = false;
-        Boolean passwordFound = false;
 
         for(int i = 0; i < fileLines.size(); i++){
             String line  = fileLines.get(i).toString();
@@ -81,14 +77,9 @@ public class TCPServer{
 
             String username = splitString[0];
 
-            String password = null;
-
-
-            if (username.equals(args)){
-                usernameFound = true;
-
+            if (username.equals(arg)){
                 if (splitString.length > 1){
-                    // This username has an associated password
+                    // This username has an associated account and password
                     // Further requests will need to be made to log in (ACCT, PASS)
                     return "+User-id valid, send account and password";
 
@@ -96,12 +87,37 @@ public class TCPServer{
                     // no password required
                     return String.format("!%s logged in", username);
                 }
-
-
             }
         }
         return "-Invalid user-id, try again";
     }
 
+    public String generateACCTResponse(String arg){
+        //Check if there is an account for the given username
+        // Read lines from file, store in list
+        ArrayList fileLines = new ArrayList();
+        FileReader.readLines("loginDetails.txt", fileLines);
 
+        for(int i = 0; i < fileLines.size(); i++){
+            String line  = fileLines.get(i).toString();
+            String[] splitString = line.split(" ");
+
+            String account = null;
+            if (splitString.length > 1){
+                account = splitString[1];
+                if (account.equals(arg)){
+                    if (splitString.length > 2){
+                        // This username has an associated password
+                        // Further requests will need to be made to log in (PASS)
+                        return "+Account valid, send password";
+
+                    } else {
+                        // no password required
+                        return "! Account valid, logged-in";
+                    }
+                }
+            }
+        }
+        return "-Invalid account, try again";
+    }
 }
