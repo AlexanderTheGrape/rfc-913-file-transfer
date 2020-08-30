@@ -38,4 +38,12 @@ public class TCPServerTest {
         String responseText = tcpServer.generateResponse(stringFromClient);
         assertEquals("-Invalid account, try again", responseText);
     }
+
+    @Test
+    public void testGenerateResponseToACCTCommandWithArgAndNotRequiringPassword(){
+        TCPServer tcpServer = new TCPServer();
+        String stringFromClient = "ACCT acct1\0";
+        String responseText = tcpServer.generateACCTResponse(stringFromClient);
+        assertEquals("! Account valid, logged-in", responseText);
+    }
 }
