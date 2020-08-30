@@ -152,7 +152,9 @@ public class TCPServer{
                     if (splitString.length > 2) {
                         // This username has an associated password
                         if (passwordFromClient.equals(splitString[2])) {
-                            if (this.currentAccount.equals(splitString[1])) {
+                            String acc = this.currentAccount;
+                            String accTxt = splitString[1];
+                            if (accTxt.equals(acc)) {
                                 this.currentlyLoggedIn = true;
                                 return "! Logged in";
                             } else if (this.currentAccount == null){
