@@ -31,7 +31,7 @@ public class TCPServerTest {
 
         String stringFromClient = "USER \0";
 
-        String responseText = tcpServer.generateUSERResponse(stringFromClient);
+        String responseText = tcpServer.generateResponse(stringFromClient);
 
         assertEquals("-Invalid user-id, try again", responseText);
 

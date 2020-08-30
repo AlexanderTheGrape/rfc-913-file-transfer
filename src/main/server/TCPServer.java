@@ -2,9 +2,11 @@ package main.server;
 
 import com.sun.security.ntlm.Server;
 import main.rfcProtocol;
+import main.util.FileReader;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 public class TCPServer{
 
@@ -45,4 +47,61 @@ public class TCPServer{
             System.out.println(e.getMessage());
         }
     }
+
+    public String generateResponse(String inputFromUser){
+        String[] splitString = inputFromUser.split(" ");
+        String command = splitString[0];
+        String args = splitString[1];
+
+        switch (command){
+            case "USER":
+                return generateUSERResponse(args);
+            default:
+                return "I don't know what command that is!";
+        }
+
+    }
+
+    public String generateUSERResponse(String usernameFromUser){
+        // Examples of expected input:
+
+        // Check if the user-id is correct, by being in the list of user-id's in the txt file
+
+        // Read lines from file, store in list
+        ArrayList fileLines = new ArrayList();
+        FileReader.readLines("loginDetails.txt", fileLines);
+
+        Boolean usernameFound = false;
+        Boolean passwordFound = false;
+
+        for(int i = 0; i < fileLines.size(); i++){
+            String line  = fileLines.get(i).toString();
+            String[] splitString = line.split(" ");
+
+            String username = splitString[0];
+
+            String password = null;
+
+
+            if (username.contains(usernameFromUser)){
+                usernameFound = true;
+
+                if (splitString.length > 1){
+                    // this username has an associated password
+                    // TODO finish this
+                    //if (splitString[1] ==
+
+
+                } else {
+                    // no password required
+                    return String.format("!%s logged in", username);
+                }
+
+
+            }
+        }
+        return "-Invalid user-id, try again";
+    }
+
+
 }
