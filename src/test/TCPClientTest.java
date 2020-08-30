@@ -43,6 +43,14 @@ public class TCPClientTest {
         assertEquals("ACCT \0", commandText);
     }
 
+    @Test
+    public void testGenerateACCTCommandTextWithAccount(){
+        TCPClient tcpClient = new TCPClient();
+
+        String commandText = tcpClient.generateACCTCommandText("acct1");
+        assertEquals("ACCT acct1\0", commandText);
+    }
+
 
 
 }
