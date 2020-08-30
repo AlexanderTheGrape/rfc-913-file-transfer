@@ -1,6 +1,9 @@
 package test;
 
+import main.server.TCPServer;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class TCPServerTest {
 
@@ -22,7 +25,15 @@ public class TCPServerTest {
          send an identification such as your personal name or host name
          as the argument, and the remote system would reply with '+'.
          */
-        
+
+        // Expected output: "-Invalid user-id, try again"
+        TCPServer tcpServer = new TCPServer();
+
+        String stringFromClient = "USER \0";
+
+        String responseText = tcpServer.generateUSERResponse(stringFromClient);
+
+        assertEquals("-Invalid user-id, try again", responseText);
 
     }
 }
