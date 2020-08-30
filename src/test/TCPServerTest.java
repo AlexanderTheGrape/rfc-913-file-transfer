@@ -96,4 +96,16 @@ public class TCPServerTest {
         responseText = tcpServer.generateResponse(stringFromClient);
         assertEquals("! Logged in", responseText);
     }
+
+    @Test
+    public void testGenerateResponseToPASSCommandWithArgsAndAccountNotYetConfirmed(){
+        TCPServer tcpServer = new TCPServer();
+
+        String stringFromClient = "USER user789\0";
+        String responseText = tcpServer.generateResponse(stringFromClient);
+
+        stringFromClient = "PASS pass1\0";
+        responseText = tcpServer.generateResponse(stringFromClient);
+        assertEquals("+Send account", responseText);
+    }
 }
