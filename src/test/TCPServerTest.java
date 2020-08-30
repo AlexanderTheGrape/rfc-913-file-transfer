@@ -81,4 +81,19 @@ public class TCPServerTest {
         responseText = tcpServer.generateResponse(stringFromClient);
         assertEquals("-Wrong password, try again", responseText);
     }
+
+    @Test
+    public void testGenerateResponseToPASSCommandWithArgsAndAccountConfirmed(){
+        TCPServer tcpServer = new TCPServer();
+
+        String stringFromClient = "USER user789\0";
+        String responseText = tcpServer.generateResponse(stringFromClient);
+
+        stringFromClient = "ACCT acct2\0";
+        responseText = tcpServer.generateResponse(stringFromClient);
+
+        stringFromClient = "PASS pass1\0";
+        responseText = tcpServer.generateResponse(stringFromClient);
+        assertEquals("! Logged in", responseText);
+    }
 }
