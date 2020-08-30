@@ -25,4 +25,12 @@ public class TCPServerTest {
         String responseText = tcpServer.generateResponse(stringFromClient);
         assertEquals("!user123 logged in", responseText);
     }
+
+    @Test
+    public void testGenerateResponseToUSERCommandWithUserIDRequiringPassword(){
+        TCPServer tcpServer = new TCPServer();
+        String stringFromClient = "USER user456\0";
+        String responseText = tcpServer.generateResponse(stringFromClient);
+        assertEquals("+User-id valid, send account and password", responseText);
+    }
 }

@@ -63,7 +63,7 @@ public class TCPServer{
 
     }
 
-    public String generateUSERResponse(String usernameFromClient){
+    public String generateUSERResponse(String args){
         // Examples of expected input:
 
         // Check if the user-id is correct, by being in the list of user-id's in the txt file
@@ -84,14 +84,13 @@ public class TCPServer{
             String password = null;
 
 
-            if (username.equals(usernameFromClient)){
+            if (username.equals(args)){
                 usernameFound = true;
 
                 if (splitString.length > 1){
-                    // this username has an associated password
-                    // TODO finish this
-                    //if (splitString[1] ==
-
+                    // This username has an associated password
+                    // Further requests will need to be made to log in (ACCT, PASS)
+                    return "+User-id valid, send account and password";
 
                 } else {
                     // no password required
