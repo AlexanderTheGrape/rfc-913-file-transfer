@@ -9,6 +9,8 @@ import java.net.*;
 import java.util.ArrayList;
 
 public class TCPServer{
+    private String currentUsername = null;
+    private String currentAccount = null;
 
     public static void main(String[] args) throws IOException {
 
@@ -81,10 +83,12 @@ public class TCPServer{
                 if (splitString.length > 1){
                     // This username has an associated account and password
                     // Further requests will need to be made to log in (ACCT, PASS)
+                    this.currentUsername = username;
                     return "+User-id valid, send account and password";
 
                 } else {
                     // no password required
+                    this.currentUsername = username;
                     return String.format("!%s logged in", username);
                 }
             }
@@ -92,7 +96,7 @@ public class TCPServer{
         return "-Invalid user-id, try again";
     }
 
-    public String generateACCTResponse(String arg){
+    public String generateACCTResponse(String acctFromClient){
         //Check if there is an account for the given username
         // Read lines from file, store in list
         ArrayList fileLines = new ArrayList();
@@ -102,18 +106,22 @@ public class TCPServer{
             String line  = fileLines.get(i).toString();
             String[] splitString = line.split(" ");
 
-            String account = null;
-            if (splitString.length > 1){
-                account = splitString[1];
-                if (account.equals(arg)){
-                    if (splitString.length > 2){
-                        // This username has an associated password
-                        // Further requests will need to be made to log in (PASS)
-                        return "+Account valid, send password";
+            String account;
+            if (this.currentUsername.equals(splitString[0])) {
+                if (splitString.length > 1) {
+                    account = splitString[1];
+                    if (account.equals(acctFromClient)) {
+                        if (splitString.length > 2) {
+                            // This username has an associated password
+                            // Further requests will need to be made to log in (PASS)
+                            this.currentAccount = account;
+                            return "+Account valid, send password";
 
-                    } else {
-                        // no password required
-                        return "! Account valid, logged-in";
+                        } else {
+                            // no password required
+                            this.currentAccount = account;
+                            return "! Account valid, logged-in";
+                        }
                     }
                 }
             }
