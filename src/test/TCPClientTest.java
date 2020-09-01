@@ -1,6 +1,7 @@
 package test;
 
 import main.client.TCPClient;
+import main.server.TCPServer;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
@@ -68,12 +69,18 @@ public class TCPClientTest {
         assertEquals("LIST F PS: <MKL>\0", commandText);
     }
 
-    @Test
-    public void testUSERIntegration(){
-        TCPClient tcpClient = new TCPClient();
-
-        assertEquals("-Invalid user-id, try again", responseTextFromServer);
-    }
+//    @Test
+//    public void testUSERIntegrationWithNoUserID(){
+//        TCPServer tcpServer = new TCPServer();
+//        TCPClient tcpClient = new TCPClient();
+//
+//        String stringFromUser = "USER ";
+//        String commandText = tcpClient.generateCommandText(stringFromUser);
+//        String responseTextFromServer = tcpClient.send(commandText);
+//
+//
+//        assertEquals("-Invalid user-id, try again", responseTextFromServer);
+//    }
 
 
 

@@ -30,7 +30,8 @@ public class TCPClient {
                 if (fromServer.equals("Bye."))
                     break;
 
-                fromUser = stdIn.readLine();
+                //fromUser = stdIn.readLine();
+                fromUser = generateCommandText(stdIn.readLine());
                 if (fromUser != null) {
                     System.out.println("Client: " + fromUser);
                     out.println(fromUser);
@@ -68,7 +69,7 @@ public class TCPClient {
         return "PASS " + args + "\0";
     }
 
-    public String generateCommandText(String args){
+    public static String generateCommandText(String args){
         return args + "\0";
     }
 }
