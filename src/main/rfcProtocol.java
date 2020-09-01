@@ -17,11 +17,13 @@ public class rfcProtocol {
     private String currentPassword = null;
     private Boolean currentlyLoggedIn = false;
     private String ExistingOldFileSpec = "";
+    private String currentDirectory = null;
 
     private static final int WAITING = 0;
 
     private static final int RENAMING =  10;
     private static final int DEFAULT =  11;
+    private static final int CDIRState = 12;
 
     private int state = WAITING;
 
@@ -47,6 +49,15 @@ public class rfcProtocol {
                 return generateLISTResponse(args);
             case "KILL":
                 return generateKILLResponse(args);
+            case "TOBE":
+                return generateTOBEResponse(args);
+            case "NAME":
+                return generateNAMEResponse(args);
+            case "DONE":
+                return generateDoneResponse(args);
+            case "CDIR":
+                return generateCDIRResponse(args);
+
             default:
                 return "I don't know what command that is!";
         }
@@ -102,7 +113,11 @@ public class rfcProtocol {
                             // This username has an associated password
                             // Further requests will need to be made to log in (PASS)
                             this.currentAccount = account;
-                            return "+Account valid, send password";
+                            if (state == CDIRState){
+                                generateCDIRResponse(this.currentDirectory);
+                            } else {
+                                return "+Account valid, send password";
+                            }
 
                         } else {
                             // no password required
@@ -272,9 +287,46 @@ public class rfcProtocol {
         }
     }
 
-    public String generateDonecommand(String args){
+    public String generateDoneResponse(String args){
 
         return "+Session closed";
 
+    }
+
+    public String generateCDIRResponse(String newDirectory){
+        // check if this was the last state
+        if (state != CDIRState){
+            this.currentAccount = null;
+            this.currentPassword = null;
+        }
+
+        // set currentState to this
+        state = CDIRState;
+        currentDirectory = newDirectory;
+
+        // check if directory is valid
+        Boolean directoryValid = ....
+
+        if (directoryValid){
+            // is current account correct (i.e. is it a global var)
+            Boolean validAccount = (null != currentAccount);
+            Boolean validPassword = (null != currentPassword);
+
+            // is current password correct? (i.e. is it a global var)
+
+            if (validAccount && validPassword){
+                // change working dir ---
+
+                return "!Changed working dir to <new-directory>";
+            } else if (validAccount) {
+                return "+account ok, send password";
+            } else if (validPassword) {
+                return "+password ok, send account";
+            } else {
+                return "+directory ok, send account/password";
+            }
+        } else {
+            return "-Can't connect to directory because: (reason)";
+        }
     }
 }
