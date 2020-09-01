@@ -43,6 +43,27 @@ Two configurations need to be made, being for the client and server respectively
 
  From there, run the server and then the client (so that both are running at the same time). This can be done by using the drop-down configurations menu to select a configuration to run, then selecting another configuration and running that as well. A console should pop up at the bottom of the screen, and in the console for the client, you can then start entering commands to test the system.
 
+## Commands & Tests of Note
+
+There are a few tests for commands that require a specific sequence of steps to be carried out that is not covered in the quick tests.
+
+If integration testing of all functionality must be completed, please refer to the corresponding test cases in the TCPServerTest and TCPClientTest java files, as the test code clearly shows what is the input inputted by the user and expected output for each case.
+
+All commands listed assume that the server and client are running correctly by starting the server, then client.
+
+### KILL
+Ensure that a text file is available for deletion and that you select the right one. An empty file named deleteMe.txt is initially present, but will need to be created again for subsequent tests. The loginDetails.txt file contains the usernames, accounts, and passwords necessary for other command functionality, so please do not delete this file.
 
 
+Commands to type into the client console:
+
+`KILL deleteMe.txt`
+
+`KILL deleteMe.txt`
+
+Expected output:
+
+`+deleteMe.txt deleted`
+
+`-Not deleted because the file does not exist or the program does not have write permissions for this file`
 

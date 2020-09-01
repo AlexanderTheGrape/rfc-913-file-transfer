@@ -245,7 +245,8 @@ public class rfcProtocol {
             // check if it exists
             Boolean exists = new File(absPath + "\\" + fileSpec).isFile();
             if (exists){
-                return "-Not deleted because a problem occurred during the deletion process";
+                return "-Not deleted because the file does not exist or the program does" +
+                        " not have write permissions for this file";
             } else {
                 return "+" + fileSpec + " deleted";
             }
