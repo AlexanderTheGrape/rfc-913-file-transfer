@@ -68,6 +68,13 @@ public class TCPClientTest {
         assertEquals("LIST F PS: <MKL>\0", commandText);
     }
 
+    @Test
+    public void testUSERIntegration(){
+        TCPClient tcpClient = new TCPClient();
+
+        assertEquals("-Invalid user-id, try again", responseTextFromServer);
+    }
+
 
 
 }
