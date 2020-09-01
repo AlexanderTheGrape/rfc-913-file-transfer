@@ -24,6 +24,8 @@ public class rfcProtocol {
     private static final int RENAMING =  10;
     private static final int DEFAULT =  11;
     private static final int CDIRState = 12;
+    private static final int RETR = 13;
+    private static final int STOP = 14;
 
     private int state = WAITING;
 
@@ -57,6 +59,8 @@ public class rfcProtocol {
                 return generateDoneResponse(args);
             case "CDIR":
                 return generateCDIRResponse(args);
+            case "RETR":
+                return generateRETRResponse(args);
 
             default:
                 return "I don't know what command that is!";
@@ -329,4 +333,34 @@ public class rfcProtocol {
             return "-Can't connect to directory because: (reason)";
         }
     }
+
+    public String generateRETRResponse(String fileSpecToSend){
+        // TODO check if the file exists
+        File f = ...
+
+        if (exists){
+            state = RETR;
+            String fileSize = valueOf(f.length());
+
+            return fileSize; //TODO check if this number is given in bytes or kb (it needs to be bytes)
+        } else {
+            return "-File doesn't exist";
+        }
+    }
+
+    public String generateSENDResponse(){
+        // TODO send all the bytes in an 8-bit stream, and needs to be concurrent
+        while(state != STOP){
+            return "";// 8 bits at a time
+        }
+
+    }
+
+    public String generateSTOPResponse(){
+        state = STOP;
+        return "+ok, RETR aborted";
+    }
+
+
+
 }
