@@ -4,7 +4,12 @@ import main.util.FileReader;
 
 import java.net.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
+import java.util.Date;
+
+import static java.lang.String.valueOf;
 
 public class rfcProtocol {
     private String currentUsername = null;
@@ -88,6 +93,8 @@ public class rfcProtocol {
                 return generateACCTResponse(args);
             case "PASS":
                 return generatePASSResponse(args);
+            case "LIST":
+                return generateLISTResponse(args);
             default:
                 return "I don't know what command that is!";
         }
@@ -193,5 +200,70 @@ public class rfcProtocol {
             }
         }
         return "-Invalid account, try again";
+    }
+
+    public String generateLISTResponse(String format){
+        // Format is "F" or "V"
+        try {
+            if (format.equals("F")) {
+                // obtain the current directory
+                String absPath = System.getProperty("user.dir");
+
+                // Create a file object
+                File f = new File(absPath);
+
+                // Get all the names of the files present
+                // in the given directory
+                File[] files = f.listFiles();
+
+                String outputString = "+" + absPath + "\r";
+                if (files.length > 0){
+                    for (int i = 0; i < files.length; i++){
+
+                        outputString = outputString + "\n" + files[i].toString().replace(absPath + "\\", "") + "\r";
+
+                    }
+                }
+                outputString = outputString + "\0";
+                return outputString;
+            } else if (format.equals("V")) {
+                // obtain the current directory
+                String absPath = System.getProperty("user.dir");
+
+                // Create a file object
+                File f = new File(absPath);
+
+                // Get all the names of the files present
+                // in the given directory
+                File[] files = f.listFiles();
+
+                String outputString = "+" + absPath + "\r";
+                if (files.length > 0){
+                    for (int i = 0; i < files.length; i++){
+                        // obtain file size, other details too
+                        String fileSize = valueOf(files[i].length());
+                        String lastModified = valueOf(files[i].lastModified());
+                        String canWrite;
+                        if (true ==files[i].canWrite()){
+                            canWrite = "writeable";
+                        } else {
+                            canWrite = "non-writeable";
+                        }
+                        outputString = outputString + "\n" +
+                                files[i].toString().replace(absPath + "\\", "") +
+                                "   file size: " + fileSize + "   " + canWrite +  "\r";
+
+                    }
+                }
+                outputString = outputString + "\0";
+                return outputString;
+            }
+        } catch(Exception e){
+            return "-" + e;
+        }
+
+        return "-ERROR - F or V must be given";
+
+
     }
 }

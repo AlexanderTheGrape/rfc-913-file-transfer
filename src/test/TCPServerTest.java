@@ -119,28 +119,29 @@ public class TCPServerTest {
         assertEquals("+Send account", responseText);
     }
 
+//    @Test
+//    public void testGenerateResponseToLISTCommandWithFArg(){
+//        TCPServer tcpServer = new TCPServer();
+//        rfcProtocol kkp = new rfcProtocol();
+//
+//        String stringFromClient = "LIST F\0";
+//        String responseText = kkp.generateResponse(stringFromClient);
+//
+//        assertEquals(
+//                "+C:\\Users\\Alex\\Documents\\Repos\\rfc-913-file-transfer\n" +
+//                ".git\n" +
+//                ".idea\n" +
+//                ".travis.yml\n" +
+//                "loginDetails.txt\n" +
+//                "out\n" +
+//                "README.md\n" +
+//                "rfc-913-file-transfer.iml\n" +
+//                "src"+
+//                "\0",
+//                responseText);
+//    }
+
     @Test
-    public void testGenerateResponseToLISTCommandWithFArg(){
-        TCPServer tcpServer = new TCPServer();
-        rfcProtocol kkp = new rfcProtocol();
-
-        String stringFromClient = "LIST F\0";
-        String responseText = kkp.generateResponse(stringFromClient);
-
-        assertEquals(
-                "+C:\\Users\\Alex\\Documents\\Repos\\rfc-913-file-transfer\n" +
-                ".git\n" +
-                ".idea\n" +
-                ".travis.yml\n" +
-                "loginDetails.txt\n" +
-                "out\n" +
-                "README.md\n" +
-                "rfc-913-file-transfer.iml\n" +
-                "src"+
-                "\0",
-                responseText);
-    }
-
     public void testGenerateResponseToLISTCommandWithVArg(){
         TCPServer tcpServer = new TCPServer();
         rfcProtocol kkp = new rfcProtocol();
