@@ -72,6 +72,10 @@ public class rfcProtocol {
     }
 
     public String generateResponse(String stringFromClient){
+        if (stringFromClient == ""){
+            return "Server connected.";
+        }
+
         String[] splitString = stringFromClient.split(" ");
         String command = splitString[0];
         String args = splitString[1];
