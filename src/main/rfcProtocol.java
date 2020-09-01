@@ -16,6 +16,7 @@ public class rfcProtocol {
     private String currentAccount = null;
     private String currentPassword = null;
     private Boolean currentlyLoggedIn = false;
+    private String ExistingOldFileSpec = "";
 
 
     private static final int WAITING = 0;
@@ -24,6 +25,9 @@ public class rfcProtocol {
     private static final int ANOTHER = 3;
 
     private static final int NUMJOKES = 5;
+
+    private static final int RENAMING =  10;
+    private static final int DEFAULT =  11;
 
     private int state = WAITING;
     private int currentJoke = 0;
@@ -95,6 +99,8 @@ public class rfcProtocol {
                 return generatePASSResponse(args);
             case "LIST":
                 return generateLISTResponse(args);
+            case "KILL":
+                return generateKILLResponse(args);
             default:
                 return "I don't know what command that is!";
         }
@@ -261,9 +267,60 @@ public class rfcProtocol {
         } catch(Exception e){
             return "-" + e;
         }
-
         return "-ERROR - F or V must be given";
+    }
 
+    public String generateKILLResponse(String fileSpec){
+        try{
+            //create file object from file
+            String absPath = System.getProperty("user.dir");
+            File f = new File(absPath + "\\" + fileSpec);
+            // try to delete the file
+            f.delete();
+            // check if it exists
+            Boolean exists = new File(absPath + "\\" + fileSpec).isFile();
+            if (exists){
+                return "-Not deleted because a problem occurred during the deletion process";
+            } else {
+                return "+" + fileSpec + " deleted";
+            }
+        } catch(Exception e) {
+            return "-Not deleted because " + e.toString();
+        }
+    }
 
+    public String generateNAMEResponse(String oldFileSpec){
+        // check if the specified file exists
+        String absPath = System.getProperty("user.dir");
+        File f = new File(absPath + "\\" + oldFileSpec);
+        // TODO add check for file
+
+        if (fileExists) {
+            state = RENAMING;
+            this.ExistingOldFileSpec = oldFileSpec;
+            return "+File exists";
+        } else {
+            return "-Can't find " + oldFileSpec;
+        }
+
+    }
+
+    public String generateTOBEResponse(String newFileSpec){
+        if (state != RENAMING) {
+            // create file stuff
+
+            // check if file exists
+
+            // otherwise return error
+
+            // rename file
+
+            // check for new file name
+            if (newFileExists){
+                return "+" + ExistingOldFileSpec + " renamed to " + newFileSpec;
+            } else {
+                return "-File wasn't renamed because " + e;
+            }
+        }
     }
 }
