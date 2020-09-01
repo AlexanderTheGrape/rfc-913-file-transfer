@@ -120,13 +120,45 @@ public class TCPServerTest {
     }
 
     @Test
-    public void testGenerateResponseToLISTCommandWithArgs(){
+    public void testGenerateResponseToLISTCommandWithFArg(){
         TCPServer tcpServer = new TCPServer();
         rfcProtocol kkp = new rfcProtocol();
 
         String stringFromClient = "LIST F\0";
         String responseText = kkp.generateResponse(stringFromClient);
 
-        assertEquals("+rfc-913-file-transfer\\src\\main\ncrfcProtocol.java", responseText);
+        assertEquals(
+                "+C:\\Users\\Alex\\Documents\\Repos\\rfc-913-file-transfer\n" +
+                ".git\n" +
+                ".idea\n" +
+                ".travis.yml\n" +
+                "loginDetails.txt\n" +
+                "out\n" +
+                "README.md\n" +
+                "rfc-913-file-transfer.iml\n" +
+                "src"+
+                "\0",
+                responseText);
+    }
+
+    public void testGenerateResponseToLISTCommandWithVArg(){
+        TCPServer tcpServer = new TCPServer();
+        rfcProtocol kkp = new rfcProtocol();
+
+        String stringFromClient = "LIST V\0";
+        String responseText = kkp.generateResponse(stringFromClient);
+
+        assertEquals(
+                "+C:\\Users\\Alex\\Documents\\Repos\\rfc-913-file-transfer\n" +
+                        ".git\n" +
+                        ".idea\n" +
+                        ".travis.yml 1kb\n" +
+                        "loginDetails.txt\n" +
+                        "out\n" +
+                        "README.md\n" +
+                        "rfc-913-file-transfer.iml\n" +
+                        "src"+
+                        "\0",
+                responseText);
     }
 }
