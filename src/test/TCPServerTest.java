@@ -118,4 +118,15 @@ public class TCPServerTest {
         responseText = kkp.generateResponse(stringFromClient);
         assertEquals("+Send account", responseText);
     }
+
+    @Test
+    public void testGenerateResponseToLISTCommandWithArgs(){
+        TCPServer tcpServer = new TCPServer();
+        rfcProtocol kkp = new rfcProtocol();
+
+        String stringFromClient = "LIST F\0";
+        String responseText = kkp.generateResponse(stringFromClient);
+
+        assertEquals("+rfc-913-file-transfer\\src\\main\ncrfcProtocol.java", responseText);
+    }
 }
