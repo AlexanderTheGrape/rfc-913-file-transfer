@@ -3,7 +3,7 @@
 # RFC-913 File Transfer - Java Implementation
 
 ## Compilation Steps
-The recommended testing environment is Intellij, and the procedure for testing will be described for this medium.
+The recommended testing environment for this project implementation is [Intellij](https://www.jetbrains.com/idea/download/), and the procedure for testing will be described using this tool.
 
 There are a number of test cases as part of the TCPServerTest.java file, which can be run to show how the protocol run by the server responds to given text from the client. It assumes that the text from the client has been deserialised correctly and is in the form of a String. It is recommended to use these tests to quickly mark the majority of test cases. However, the procedure for testing the client and server for integration testing by running them both is also listed here for more thorough testing.
 
@@ -12,7 +12,9 @@ The following instructions are for running the quick tests.
 
 Open an Intellij window and open the rfc-913-file-transfer as the project folder.
 
-Set up the build environment by clicking the 'edit configurations' drop-down button located up the top right of the screen. ![edit configurations](./images/capture.png)
+Set up the build environment by clicking the 'edit configurations' drop-down button located up the top right of the screen.
+
+ ![edit configurations](./images/capture.png)
 
 Click the '+' button up the top left of the tab to add a new configuration, and select JUnit.
 
@@ -27,6 +29,9 @@ The tests should then run and you can see the results in the lower half of the I
 
 Repeat the process again for creating the testing environment for the Client as well (TCPClientTest).
 
+The function names of test cases describe what each are for, often with more than 1 for each command to cover the whole range of expected inputs/functionality.
+
+![Test example](./images/capture7.png)
 
 
 ## Integration Tests
