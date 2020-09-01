@@ -67,4 +67,8 @@ public class TCPClient {
     public String generatePASSCommandText(String args){
         return "PASS " + args + "\0";
     }
+
+    public String generateCommandText(String args){
+        return args + "\0";
+    }
 }

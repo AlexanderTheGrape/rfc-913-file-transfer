@@ -59,6 +59,15 @@ public class TCPClientTest {
         assertEquals("PASS pass1\0", commandText);
     }
 
+    @Test
+    public void testGenerateLISTCommandWithCorrectArgs(){
+        // LIST { F | V } directory-path
+        TCPClient tcpClient = new TCPClient();
+
+        String commandText = tcpClient.generateCommandText("LIST F PS: <MKL>");
+        assertEquals("LIST F PS: <MKL>\0", commandText);
+    }
+
 
 
 }
