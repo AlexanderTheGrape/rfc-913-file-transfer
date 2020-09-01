@@ -27,7 +27,7 @@ public class TCPClient {
 
             while ((fromServer = in.readLine()) != null) {
                 System.out.println("Server: " + fromServer);
-                if (fromServer.equals("Bye."))
+                if (fromServer.equals("+Session closed"))
                     break;
 
                 //fromUser = stdIn.readLine();

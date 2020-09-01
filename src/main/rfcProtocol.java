@@ -18,67 +18,13 @@ public class rfcProtocol {
     private Boolean currentlyLoggedIn = false;
     private String ExistingOldFileSpec = "";
 
-
     private static final int WAITING = 0;
-    private static final int SENTKNOCKKNOCK = 1;
-    private static final int SENTCLUE = 2;
-    private static final int ANOTHER = 3;
-
-    private static final int NUMJOKES = 5;
 
     private static final int RENAMING =  10;
     private static final int DEFAULT =  11;
 
     private int state = WAITING;
-    private int currentJoke = 0;
 
-    private String[] clues = { "Turnip", "Little Old Lady", "Atch", "Who", "Who" };
-    private String[] answers = { "Turnip the heat, it's cold in here!",
-            "I didn't know you could yodel!",
-            "Bless you!",
-            "Is there an owl in here?",
-            "Is there an echo in here?" };
-
-    public String processInput(String theInput) {
-        String theOutput = null;
-
-        if (state == WAITING) {
-            theOutput = "Knock! Knock!";
-            state = SENTKNOCKKNOCK;
-        } else if (state == SENTKNOCKKNOCK) {
-            if (theInput.equalsIgnoreCase("Who's there?")) {
-                theOutput = clues[currentJoke];
-                state = SENTCLUE;
-            } else {
-                theOutput = "You're supposed to say \"Who's there?\"! " +
-                        "Try again. Knock! Knock!";
-            }
-        } else if (state == SENTCLUE) {
-            if (theInput.equalsIgnoreCase(clues[currentJoke] + " who?")) {
-                theOutput = answers[currentJoke] + " Want another? (y/n)";
-                state = ANOTHER;
-            } else {
-                theOutput = "You're supposed to say \"" +
-                        clues[currentJoke] +
-                        " who?\"" +
-                        "! Try again. Knock! Knock!";
-                state = SENTKNOCKKNOCK;
-            }
-        } else if (state == ANOTHER) {
-            if (theInput.equalsIgnoreCase("y")) {
-                theOutput = "Knock! Knock!";
-                if (currentJoke == (NUMJOKES - 1))
-                    currentJoke = 0;
-                else
-                    currentJoke++;
-                state = SENTKNOCKKNOCK;
-            } else {
-                theOutput = "Bye.";
-                state = WAITING;
-            }
-        }
-        return theOutput;
-    }
 
     public String generateResponse(String stringFromClient){
         if (stringFromClient == ""){
@@ -321,6 +267,14 @@ public class rfcProtocol {
             } else {
                 return "-File wasn't renamed because " + e;
             }
+        } else {
+            return "-File wasn't renamed because no file to rename has been submitted with a NAME command";
         }
+    }
+
+    public String generateDonecommand(String args){
+
+        return "+Session closed";
+
     }
 }

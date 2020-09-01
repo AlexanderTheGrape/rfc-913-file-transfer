@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 public class TCPServer{
 
-
     public static void main(String[] args) throws IOException {
 
         if (args.length != 1) {
@@ -41,7 +40,7 @@ public class TCPServer{
                 //outputLine = kkp.processInput(inputLine);
                 outputLine = kkp.generateResponse(inputLine);
                 out.println(outputLine);
-                if (outputLine.equals("Bye."))
+                if (outputLine.equals("+Session closed"))
                     break;
             }
         } catch (IOException e) {
