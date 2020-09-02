@@ -176,7 +176,6 @@ public class TCPServerTest {
 
     @Test
     public void testGenerateResponseToKILLCommandWithInvalidFileName(){
-        TCPServer tcpServer = new TCPServer();
         rfcProtocol kkp = new rfcProtocol();
 
         String stringFromClient = "KILL deleteMe2.txt\0";
@@ -186,5 +185,15 @@ public class TCPServerTest {
         stringFromClient = "KILL deleteMe2.txt\0";
         responseText = kkp.generateResponse(stringFromClient);
         assertEquals("-Not deleted because file does not exist", responseText);
+    }
+
+    @Test
+    public void testGenerateResponseToRENAMECommandWithInvalidFileName(){
+        rfcProtocol kkp = new rfcProtocol();
+
+        String stringFromClient = "NAME notAValidFile.txt\0";
+        String responseText = kkp.generateResponse(stringFromClient);
+
+        assertEquals("-Can't find notAValidFile.txt", responseText);
     }
 }
