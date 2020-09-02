@@ -5,6 +5,7 @@ import main.server.TCPServer;
 import org.junit.Test;
 
 import java.io.File;
+import java.nio.file.Files;
 
 import static org.junit.Assert.assertEquals;
 
@@ -224,6 +225,14 @@ public class TCPServerTest {
 
         }
 
+        // Ensure the new file name doesn't exist
+        String absPath = System.getProperty("user.dir");
+        File f = new File(absPath + "\\" + "newFileName.txt");
+        try{
+            Files.deleteIfExists(f.toPath());
+        } catch (Exception e){
+        }
+
         String stringFromClient = "NAME filename.txt\0";
         String responseText = kkp.generateResponse(stringFromClient);
 
@@ -231,8 +240,36 @@ public class TCPServerTest {
 
         stringFromClient = "TOBE newFileName.txt\0";
         responseText = kkp.generateResponse(stringFromClient);
-        
+
         assertEquals("+filename.txt renamed to newFileName.txt", responseText);
+    }
+
+    @Test
+    public void testGenerateResponseToRENAMECommandWithInvalidNewFileName(){
+        rfcProtocol kkp = new rfcProtocol();
+
+        File myObj = new File("filename.txt");
+        try{
+            myObj.createNewFile();
+        } catch (Exception e){
+
+        }
+        File myObj2 = new File("existingFileName.txt");
+        try{
+            myObj2.createNewFile();
+        } catch (Exception e){
+
+        }
+
+        String stringFromClient = "NAME filename.txt\0";
+        String responseText = kkp.generateResponse(stringFromClient);
+
+        assertEquals("+File exists", responseText);
+
+        stringFromClient = "TOBE existingFileName.txt\0";
+        responseText = kkp.generateResponse(stringFromClient);
+
+        assertEquals("-File wasn't renamed because a file with the new name already exists", responseText);
     }
 
 
