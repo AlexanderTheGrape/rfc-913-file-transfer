@@ -272,5 +272,13 @@ public class TCPServerTest {
         assertEquals("-File wasn't renamed because a file with the new name already exists", responseText);
     }
 
+    @Test
+    public void testGenerateResponseToDONECommand(){
+        rfcProtocol kkp = new rfcProtocol();
 
+        String stringFromClient = "DONE \0";
+        String responseText = kkp.generateResponse(stringFromClient);
+
+        assertEquals("+Session closed", responseText);
+    }
 }
