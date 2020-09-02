@@ -328,7 +328,7 @@ public class rfcProtocol {
 
             if (validAccount && validPassword){
                 currentDirectory = currentDirectory + newDirectory;
-                return "!Changed working dir to " + currentDirectory;
+                return "!Changed working dir to " + newDirectory;
             } else if (validAccount) {
                 return "+account ok, send password";
             } else if (validPassword) {

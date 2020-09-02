@@ -281,4 +281,25 @@ public class TCPServerTest {
 
         assertEquals("+Session closed", responseText);
     }
+
+    @Test
+    public void testGenerateResponseToCDIRCommandRequiringACCTAndPASS(){
+        rfcProtocol kkp = new rfcProtocol();
+
+        String stringFromClient = "CDIR \\src\0";
+        String responseText = kkp.generateResponse(stringFromClient);
+
+        assertEquals("+directory ok, send account/password", responseText);
+
+        stringFromClient = "ACCT acct2\0";
+        responseText = kkp.generateResponse(stringFromClient);
+
+        assertEquals("+account ok, send password", responseText);
+
+        stringFromClient = "PASS pass1\0";
+        responseText = kkp.generateResponse(stringFromClient);
+
+        assertEquals("!Changed working dir to \\src", responseText);
+
+    }
 }
