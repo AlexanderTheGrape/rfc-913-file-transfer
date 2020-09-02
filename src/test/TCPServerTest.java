@@ -228,5 +228,12 @@ public class TCPServerTest {
         String responseText = kkp.generateResponse(stringFromClient);
 
         assertEquals("+File exists", responseText);
+
+        stringFromClient = "TOBE newFileName.txt\0";
+        responseText = kkp.generateResponse(stringFromClient);
+        
+        assertEquals("+filename.txt renamed to newFileName.txt", responseText);
     }
+
+
 }
