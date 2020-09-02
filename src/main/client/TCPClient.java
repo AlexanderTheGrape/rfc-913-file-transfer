@@ -27,8 +27,10 @@ public class TCPClient {
 
             while ((fromServer = in.readLine()) != null) {
                 System.out.println("Server: " + fromServer);
-                if (fromServer.equals("+Session closed"))
+                if (fromServer.equals("+Session closed")) {
+                    kkSocket.close();
                     break;
+                }
 
                 //fromUser = stdIn.readLine();
                 fromUser = generateCommandText(stdIn.readLine());

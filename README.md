@@ -56,6 +56,8 @@ If integration testing of all functionality must be completed, please refer to t
 
 All commands listed assume that the server and client are running correctly by starting the server, then client.
 
+All commands are assumed to be inputted correctly. For example, "DONE " (with a space) is the expected input from the user for the DONE command, whereas "DONE" (without a space) will cause an error.
+
 ### KILL
 Ensure that a text file is available for deletion and that you select the right one. An empty file named deleteMe.txt is initially present, but will need to be created again for subsequent tests. The loginDetails.txt file contains the usernames, accounts, and passwords necessary for other command functionality, so please do not delete this file.
 

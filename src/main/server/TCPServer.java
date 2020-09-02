@@ -40,9 +40,14 @@ public class TCPServer{
                 //outputLine = kkp.processInput(inputLine);
                 outputLine = kkp.generateResponse(inputLine);
                 out.println(outputLine);
+                if (kkp.getState() != 15){ // bug in CDIR TODO figure out why CDIR completes prematurely
+                    continue;
+                }
                 if (outputLine.equals("+Session closed"))
+                    serverSocket.close();
                     break;
             }
+            System.out.println("End of program");
         } catch (IOException e) {
             System.out.println("Exception caught when trying to listen on port "
                     + portNumber + " or listening for a connection");

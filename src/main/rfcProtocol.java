@@ -5,6 +5,8 @@ import main.util.FileReader;
 import java.net.*;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,7 +19,7 @@ public class rfcProtocol {
     private String currentPassword = null;
     private Boolean currentlyLoggedIn = false;
     private String ExistingOldFileSpec = "";
-    private String currentDirectory = null;
+    private String currentDirectory = System.getProperty("user.dir");
 
     private static final int WAITING = 0;
 
@@ -26,9 +28,13 @@ public class rfcProtocol {
     private static final int CDIRState = 12;
     private static final int RETR = 13;
     private static final int STOP = 14;
+    private static final int DONE = 15;
 
     private int state = WAITING;
 
+    public int getState(){
+        return state;
+    }
 
     public String generateResponse(String stringFromClient){
         if (stringFromClient == ""){
@@ -59,8 +65,8 @@ public class rfcProtocol {
                 return generateDoneResponse(args);
             case "CDIR":
                 return generateCDIRResponse(args);
-            case "RETR":
-                return generateRETRResponse(args);
+//            case "RETR":
+//                return generateRETRResponse(args);
 
             default:
                 return "I don't know what command that is!";
@@ -118,7 +124,7 @@ public class rfcProtocol {
                             // Further requests will need to be made to log in (PASS)
                             this.currentAccount = account;
                             if (state == CDIRState){
-                                generateCDIRResponse(this.currentDirectory);
+                                //generateCDIRResponse(this.currentDirectory); TODO uncomment this
                             } else {
                                 return "+Account valid, send password";
                             }
@@ -240,15 +246,16 @@ public class rfcProtocol {
             //create file object from file
             String absPath = System.getProperty("user.dir");
             File f = new File(absPath + "\\" + fileSpec);
-            // try to delete the file
-            f.delete();
-            // check if it exists
-            Boolean exists = new File(absPath + "\\" + fileSpec).isFile();
-            if (exists){
-                return "-Not deleted because the file does not exist or the program does" +
-                        " not have write permissions for this file";
-            } else {
-                return "+" + fileSpec + " deleted";
+
+            try {
+                Boolean exists = Files.deleteIfExists(f.toPath());
+                if (exists) {
+                    return "+" + fileSpec + " deleted";
+                } else {
+                    return "-Not deleted because file does not exist";
+                }
+            } catch (Exception e){
+                return "-Not deleted because " + e.toString();
             }
         } catch(Exception e) {
             return "-Not deleted because " + e.toString();
@@ -259,8 +266,8 @@ public class rfcProtocol {
         // check if the specified file exists
         String absPath = System.getProperty("user.dir");
         File f = new File(absPath + "\\" + oldFileSpec);
-        // TODO add check for file
 
+        Boolean fileExists = Files.exists(f.toPath());
         if (fileExists) {
             state = RENAMING;
             this.ExistingOldFileSpec = oldFileSpec;
@@ -272,30 +279,32 @@ public class rfcProtocol {
     }
 
     public String generateTOBEResponse(String newFileSpec){
-        if (state != RENAMING) {
-            // create file stuff
+        if (state == RENAMING) {
+            File f = new File(currentDirectory + "\\" + ExistingOldFileSpec);
 
+            // create new file object with new name
+            File f2 = new File(currentDirectory + "\\" + newFileSpec);
             // check if file exists
-
-            // otherwise return error
-
-            // rename file
-
-            // check for new file name
-            if (newFileExists){
-                return "+" + ExistingOldFileSpec + " renamed to " + newFileSpec;
-            } else {
-                return "-File wasn't renamed because " + e;
+            if (f2.exists()) {
+                return "-File wasn\'t renamed because a file with the new name already exists";
             }
+
+            // Rename file (or directory)
+            boolean success = f.renameTo(f2);
+
+            if (!success) {
+                // File was not successfully renamed
+                return "-File wasn\'t renamed because an error occurred when renaming";
+            }
+            return "+" + ExistingOldFileSpec + " renamed to " + newFileSpec;
         } else {
             return "-File wasn't renamed because no file to rename has been submitted with a NAME command";
         }
     }
 
     public String generateDoneResponse(String args){
-
+        state = DONE;
         return "+Session closed";
-
     }
 
     public String generateCDIRResponse(String newDirectory){
@@ -307,22 +316,19 @@ public class rfcProtocol {
 
         // set currentState to this
         state = CDIRState;
-        currentDirectory = newDirectory;
 
         // check if directory is valid
-        Boolean directoryValid = ....
+        String absPath = System.getProperty("user.dir");
+        Path path = Paths.get(absPath + newDirectory);
+        Boolean directoryValid = Files.exists(path);
 
         if (directoryValid){
-            // is current account correct (i.e. is it a global var)
             Boolean validAccount = (null != currentAccount);
             Boolean validPassword = (null != currentPassword);
 
-            // is current password correct? (i.e. is it a global var)
-
             if (validAccount && validPassword){
-                // change working dir ---
-
-                return "!Changed working dir to <new-directory>";
+                currentDirectory = currentDirectory + newDirectory;
+                return "!Changed working dir to " + currentDirectory;
             } else if (validAccount) {
                 return "+account ok, send password";
             } else if (validPassword) {
@@ -334,33 +340,33 @@ public class rfcProtocol {
             return "-Can't connect to directory because: (reason)";
         }
     }
-
-    public String generateRETRResponse(String fileSpecToSend){
-        // TODO check if the file exists
-        File f = ...
-
-        if (exists){
-            state = RETR;
-            String fileSize = valueOf(f.length());
-
-            return fileSize; //TODO check if this number is given in bytes or kb (it needs to be bytes)
-        } else {
-            return "-File doesn't exist";
-        }
-    }
-
-    public String generateSENDResponse(){
-        // TODO send all the bytes in an 8-bit stream, and needs to be concurrent
-        while(state != STOP){
-            return "";// 8 bits at a time
-        }
-
-    }
-
-    public String generateSTOPResponse(){
-        state = STOP;
-        return "+ok, RETR aborted";
-    }
+//
+//    public String generateRETRResponse(String fileSpecToSend){
+//        // TODO check if the file exists
+//        File f = ...
+//
+//        if (exists){
+//            state = RETR;
+//            String fileSize = valueOf(f.length());
+//
+//            return fileSize; //TODO check if this number is given in bytes or kb (it needs to be bytes)
+//        } else {
+//            return "-File doesn't exist";
+//        }
+//    }
+//
+//    public String generateSENDResponse(){
+//        // TODO send all the bytes in an 8-bit stream, and needs to be concurrent
+//        while(state != STOP){
+//            return "";// 8 bits at a time
+//        }
+//
+//    }
+//
+//    public String generateSTOPResponse(){
+//        state = STOP;
+//        return "+ok, RETR aborted";
+//    }
 
 
 

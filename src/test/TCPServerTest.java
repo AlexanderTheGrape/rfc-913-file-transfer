@@ -141,25 +141,50 @@ public class TCPServerTest {
 //                responseText);
 //    }
 
+//    @Test
+//    public void testGenerateResponseToLISTCommandWithVArg(){
+//        TCPServer tcpServer = new TCPServer();
+//        rfcProtocol kkp = new rfcProtocol();
+//
+//        String stringFromClient = "LIST V\0";
+//        String responseText = kkp.generateResponse(stringFromClient);
+//
+//        assertEquals(
+//                "+C:\\Users\\Alex\\Documents\\Repos\\rfc-913-file-transfer\n" +
+//                        ".git\n" +
+//                        ".idea\n" +
+//                        ".travis.yml 1kb\n" +
+//                        "loginDetails.txt\n" +
+//                        "out\n" +
+//                        "README.md\n" +
+//                        "rfc-913-file-transfer.iml\n" +
+//                        "src"+
+//                        "\0",
+//                responseText);
+//    }
+
     @Test
-    public void testGenerateResponseToLISTCommandWithVArg(){
+    public void testGenerateResponseToKILLCommandWithCorrectFileName(){
         TCPServer tcpServer = new TCPServer();
         rfcProtocol kkp = new rfcProtocol();
 
-        String stringFromClient = "LIST V\0";
+        String stringFromClient = "KILL deleteMe.txt\0";
         String responseText = kkp.generateResponse(stringFromClient);
 
-        assertEquals(
-                "+C:\\Users\\Alex\\Documents\\Repos\\rfc-913-file-transfer\n" +
-                        ".git\n" +
-                        ".idea\n" +
-                        ".travis.yml 1kb\n" +
-                        "loginDetails.txt\n" +
-                        "out\n" +
-                        "README.md\n" +
-                        "rfc-913-file-transfer.iml\n" +
-                        "src"+
-                        "\0",
-                responseText);
+        assertEquals("+deleteMe.txt deleted", responseText);
+    }
+
+    @Test
+    public void testGenerateResponseToKILLCommandWithInvalidFileName(){
+        TCPServer tcpServer = new TCPServer();
+        rfcProtocol kkp = new rfcProtocol();
+
+        String stringFromClient = "KILL deleteMe2.txt\0";
+        String responseText = kkp.generateResponse(stringFromClient);
+
+        // After deletion, we cannot delete the same again
+        stringFromClient = "KILL deleteMe2.txt\0";
+        responseText = kkp.generateResponse(stringFromClient);
+        assertEquals("-Not deleted because file does not exist", responseText);
     }
 }
