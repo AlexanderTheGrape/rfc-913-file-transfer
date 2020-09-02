@@ -20,6 +20,7 @@ public class rfcProtocol {
     private Boolean currentlyLoggedIn = false;
     private String ExistingOldFileSpec = "";
     private String currentDirectory = System.getProperty("user.dir");
+    private String newDirectoryToNavigate = null;
 
     private static final int WAITING = 0;
 
@@ -124,7 +125,7 @@ public class rfcProtocol {
                             // Further requests will need to be made to log in (PASS)
                             this.currentAccount = account;
                             if (state == CDIRState){
-                                //generateCDIRResponse(this.currentDirectory); TODO uncomment this
+                                generateCDIRResponse(this.newDirectoryToNavigate);
                             } else {
                                 return "+Account valid, send password";
                             }
@@ -163,7 +164,11 @@ public class rfcProtocol {
                             String accTxt = splitString[1];
                             if (accTxt.equals(acc)) {
                                 this.currentlyLoggedIn = true;
-                                return "! Logged in";
+                                if (state == CDIRState) {
+                                    generateCDIRResponse(this.newDirectoryToNavigate);
+                                } else {
+                                    return "! Logged in";
+                                }
                             } else if (this.currentAccount == null){
                                 this.currentPassword = passwordFromClient;
                                 return "+Send account";
@@ -316,6 +321,7 @@ public class rfcProtocol {
 
         // set currentState to this
         state = CDIRState;
+        this.newDirectoryToNavigate = newDirectory;
 
         // check if directory is valid
         String absPath = System.getProperty("user.dir");
@@ -326,18 +332,25 @@ public class rfcProtocol {
             Boolean validAccount = (null != currentAccount);
             Boolean validPassword = (null != currentPassword);
 
-            if (validAccount && validPassword){
+            // Assume that directories need no extra credentials, but the \src directory needs
+            // both ACCT and PASS.
+            if (!newDirectory.equals("\\src")){
                 currentDirectory = currentDirectory + newDirectory;
                 return "!Changed working dir to " + newDirectory;
-            } else if (validAccount) {
-                return "+account ok, send password";
-            } else if (validPassword) {
-                return "+password ok, send account";
             } else {
-                return "+directory ok, send account/password";
+                if (validAccount && validPassword) {
+                    currentDirectory = currentDirectory + newDirectory;
+                    return "!Changed working dir to " + newDirectory;
+                } else if (validAccount) {
+                    return "+account ok, send password";
+                } else if (validPassword) {
+                    return "+password ok, send account";
+                } else {
+                    return "+directory ok, send account/password";
+                }
             }
         } else {
-            return "-Can't connect to directory because: (reason)";
+            return "-Can't connect to directory because directory is not valid";
         }
     }
 //

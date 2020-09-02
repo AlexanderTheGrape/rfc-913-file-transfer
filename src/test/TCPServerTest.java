@@ -286,8 +286,18 @@ public class TCPServerTest {
     public void testGenerateResponseToCDIRCommandRequiringACCTAndPASS(){
         rfcProtocol kkp = new rfcProtocol();
 
-        String stringFromClient = "CDIR \\src\0";
+        String stringFromClient = "USER user789\0";
         String responseText = kkp.generateResponse(stringFromClient);
+
+        stringFromClient = "ACCT acct2\0";
+        responseText = kkp.generateResponse(stringFromClient);
+
+        stringFromClient = "PASS pass1\0";
+        responseText = kkp.generateResponse(stringFromClient);
+        assertEquals("! Logged in", responseText);
+
+        stringFromClient = "CDIR \\src\0";
+        responseText = kkp.generateResponse(stringFromClient);
 
         assertEquals("+directory ok, send account/password", responseText);
 
@@ -301,5 +311,15 @@ public class TCPServerTest {
 
         assertEquals("!Changed working dir to \\src", responseText);
 
+    }
+
+    @Test
+    public void testGenerateResponseToCDIRCommandRequiringNoCredentials(){
+        rfcProtocol kkp = new rfcProtocol();
+
+        String stringFromClient = "CDIR \\images\0";
+        String responseText = kkp.generateResponse(stringFromClient);
+
+        assertEquals("!Changed working dir to \\src", responseText);
     }
 }
