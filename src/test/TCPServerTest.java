@@ -4,6 +4,8 @@ import main.rfcProtocol;
 import main.server.TCPServer;
 import org.junit.Test;
 
+import java.io.File;
+
 import static org.junit.Assert.assertEquals;
 
 public class TCPServerTest {
@@ -168,6 +170,13 @@ public class TCPServerTest {
         TCPServer tcpServer = new TCPServer();
         rfcProtocol kkp = new rfcProtocol();
 
+        File myObj = new File("deleteMe.txt");
+        try{
+            myObj.createNewFile();
+        } catch (Exception e){
+
+        }
+
         String stringFromClient = "KILL deleteMe.txt\0";
         String responseText = kkp.generateResponse(stringFromClient);
 
@@ -178,11 +187,18 @@ public class TCPServerTest {
     public void testGenerateResponseToKILLCommandWithInvalidFileName(){
         rfcProtocol kkp = new rfcProtocol();
 
-        String stringFromClient = "KILL deleteMe2.txt\0";
+        File myObj = new File("deleteMe.txt");
+        try{
+            myObj.createNewFile();
+        } catch (Exception e){
+
+        }
+
+        String stringFromClient = "KILL deleteMe.txt\0";
         String responseText = kkp.generateResponse(stringFromClient);
 
         // After deletion, we cannot delete the same again
-        stringFromClient = "KILL deleteMe2.txt\0";
+        stringFromClient = "KILL deleteMe.txt\0";
         responseText = kkp.generateResponse(stringFromClient);
         assertEquals("-Not deleted because file does not exist", responseText);
     }
@@ -195,5 +211,22 @@ public class TCPServerTest {
         String responseText = kkp.generateResponse(stringFromClient);
 
         assertEquals("-Can't find notAValidFile.txt", responseText);
+    }
+
+    @Test
+    public void testGenerateResponseToRENAMECommandWithValidFileName(){
+        rfcProtocol kkp = new rfcProtocol();
+
+        File myObj = new File("filename.txt");
+        try{
+            myObj.createNewFile();
+        } catch (Exception e){
+
+        }
+
+        String stringFromClient = "NAME filename.txt\0";
+        String responseText = kkp.generateResponse(stringFromClient);
+
+        assertEquals("+File exists", responseText);
     }
 }
