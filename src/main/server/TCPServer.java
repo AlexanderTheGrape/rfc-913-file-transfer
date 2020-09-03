@@ -13,7 +13,7 @@ public class TCPServer{
     public static void main(String[] args) throws IOException {
 
         if (args.length != 1) {
-            System.err.println("Usage: java KnockKnockServer <port number>");
+            System.err.println("Usage: java TCPServer <port number>(port number should be 1234 to connect with client)");
             System.exit(1);
         }
 
@@ -31,18 +31,18 @@ public class TCPServer{
             String inputLine, outputLine;
 
             // Initiate conversation with client
-            rfcProtocol kkp = new rfcProtocol();
-            //outputLine = kkp.processInput(null);
-            outputLine = kkp.generateResponse("");
+            rfcProtocol rfcProtocol = new rfcProtocol();
+            //outputLine = rfcProtocol.processInput(null);
+            outputLine = rfcProtocol.generateResponse("");
             out.println(outputLine);
 
 //          while ((inputLine = in.readLine()) != null) {
             while (outputLine != "+Session closed") {
                 inputLine = in.readLine();
-                //outputLine = kkp.processInput(inputLine);
-                outputLine = kkp.generateResponse(inputLine);
+                //outputLine = rfcProtocol.processInput(inputLine);
+                outputLine = rfcProtocol.generateResponse(inputLine);
                 out.println(outputLine);
-                if (kkp.getState() != 15){ // bug in CDIR TODO figure out why CDIR completes prematurely
+                if (rfcProtocol.getState() != 15){ // bug in CDIR TODO figure out why CDIR completes prematurely
                     continue;
                 }
                 if (outputLine.equals("+Session closed"))

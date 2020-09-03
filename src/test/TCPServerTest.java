@@ -14,121 +14,121 @@ public class TCPServerTest {
     @Test
     public void testGenerateResponseToUSERCommandWithNoUserID(){
         TCPServer tcpServer = new TCPServer();
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
         String stringFromClient = "USER \0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
         assertEquals("-Invalid user-id, try again", responseText);
     }
 
     @Test
     public void testGenerateResponseToUSERCommandWithUserIDRequiringNoPassword(){
         TCPServer tcpServer = new TCPServer();
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
         String stringFromClient = "USER user123\0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
         assertEquals("!user123 logged in", responseText);
     }
 
     @Test
     public void testGenerateResponseToUSERCommandWithUserIDRequiringPassword(){
         TCPServer tcpServer = new TCPServer();
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
         String stringFromClient = "USER user456\0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
         assertEquals("+User-id valid, send account and password", responseText);
     }
 
     @Test
     public void testGenerateResponseToACCTCommandWithNoArgs(){
         TCPServer tcpServer = new TCPServer();
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
 
         String stringFromClient = "USER user456\0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
 
         stringFromClient = "ACCT \0";
-        responseText = kkp.generateResponse(stringFromClient);
+        responseText = rfcProtocol.generateResponse(stringFromClient);
         assertEquals("-Invalid account, try again", responseText);
     }
 
     @Test
     public void testGenerateResponseToACCTCommandWithArgAndNotRequiringPassword(){
         TCPServer tcpServer = new TCPServer();
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
 
         String stringFromClient = "USER user456\0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
 
         stringFromClient = "ACCT acct1\0";
-        responseText = kkp.generateResponse(stringFromClient);
+        responseText = rfcProtocol.generateResponse(stringFromClient);
         assertEquals("! Account valid, logged-in", responseText);
     }
 
     @Test
     public void testGenerateResponseToACCTCommandWithArgAndRequiringPassword(){
         TCPServer tcpServer = new TCPServer();
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
 
         String stringFromClient = "USER user789\0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
 
         stringFromClient = "ACCT acct2\0";
-        responseText = kkp.generateResponse(stringFromClient);
+        responseText = rfcProtocol.generateResponse(stringFromClient);
         assertEquals("+Account valid, send password", responseText);
     }
 
     @Test
     public void testGenerateResponseToPASSCommandWithNoArgs(){
         TCPServer tcpServer = new TCPServer();
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
 
         String stringFromClient = "USER user789\0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
 
         stringFromClient = "ACCT acct2\0";
-        responseText = kkp.generateResponse(stringFromClient);
+        responseText = rfcProtocol.generateResponse(stringFromClient);
 
         stringFromClient = "PASS \0";
-        responseText = kkp.generateResponse(stringFromClient);
+        responseText = rfcProtocol.generateResponse(stringFromClient);
         assertEquals("-Wrong password, try again", responseText);
     }
 
     @Test
     public void testGenerateResponseToPASSCommandWithArgsAndAccountConfirmed(){
         TCPServer tcpServer = new TCPServer();
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
 
         String stringFromClient = "USER user789\0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
 
         stringFromClient = "ACCT acct2\0";
-        responseText = kkp.generateResponse(stringFromClient);
+        responseText = rfcProtocol.generateResponse(stringFromClient);
 
         stringFromClient = "PASS pass1\0";
-        responseText = kkp.generateResponse(stringFromClient);
+        responseText = rfcProtocol.generateResponse(stringFromClient);
         assertEquals("! Logged in", responseText);
     }
 
     @Test
     public void testGenerateResponseToPASSCommandWithArgsAndAccountNotYetConfirmed(){
         TCPServer tcpServer = new TCPServer();
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
 
         String stringFromClient = "USER user789\0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
 
         stringFromClient = "PASS pass1\0";
-        responseText = kkp.generateResponse(stringFromClient);
+        responseText = rfcProtocol.generateResponse(stringFromClient);
         assertEquals("+Send account", responseText);
     }
 
 //    @Test
 //    public void testGenerateResponseToLISTCommandWithFArg(){
 //        TCPServer tcpServer = new TCPServer();
-//        rfcProtocol kkp = new rfcProtocol();
+//        rfcProtocol rfcProtocol = new rfcProtocol();
 //
 //        String stringFromClient = "LIST F\0";
-//        String responseText = kkp.generateResponse(stringFromClient);
+//        String responseText = rfcProtocol.generateResponse(stringFromClient);
 //
 //        assertEquals(
 //                "+C:\\Users\\Alex\\Documents\\Repos\\rfc-913-file-transfer\n" +
@@ -147,10 +147,10 @@ public class TCPServerTest {
 //    @Test
 //    public void testGenerateResponseToLISTCommandWithVArg(){
 //        TCPServer tcpServer = new TCPServer();
-//        rfcProtocol kkp = new rfcProtocol();
+//        rfcProtocol rfcProtocol = new rfcProtocol();
 //
 //        String stringFromClient = "LIST V\0";
-//        String responseText = kkp.generateResponse(stringFromClient);
+//        String responseText = rfcProtocol.generateResponse(stringFromClient);
 //
 //        assertEquals(
 //                "+C:\\Users\\Alex\\Documents\\Repos\\rfc-913-file-transfer\n" +
@@ -169,7 +169,7 @@ public class TCPServerTest {
     @Test
     public void testGenerateResponseToKILLCommandWithCorrectFileName(){
         TCPServer tcpServer = new TCPServer();
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
 
         File myObj = new File("deleteMe.txt");
         try{
@@ -179,14 +179,14 @@ public class TCPServerTest {
         }
 
         String stringFromClient = "KILL deleteMe.txt\0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("+deleteMe.txt deleted", responseText);
     }
 
     @Test
     public void testGenerateResponseToKILLCommandWithInvalidFileName(){
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
 
         File myObj = new File("deleteMe.txt");
         try{
@@ -196,27 +196,27 @@ public class TCPServerTest {
         }
 
         String stringFromClient = "KILL deleteMe.txt\0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
 
         // After deletion, we cannot delete the same again
         stringFromClient = "KILL deleteMe.txt\0";
-        responseText = kkp.generateResponse(stringFromClient);
+        responseText = rfcProtocol.generateResponse(stringFromClient);
         assertEquals("-Not deleted because file does not exist", responseText);
     }
 
     @Test
     public void testGenerateResponseToRENAMECommandWithInvalidFileName(){
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
 
         String stringFromClient = "NAME notAValidFile.txt\0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("-Can't find notAValidFile.txt", responseText);
     }
 
     @Test
     public void testGenerateResponseToRENAMECommandWithValidFileName(){
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
 
         File myObj = new File("filename.txt");
         try{
@@ -234,19 +234,19 @@ public class TCPServerTest {
         }
 
         String stringFromClient = "NAME filename.txt\0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("+File exists", responseText);
 
         stringFromClient = "TOBE newFileName.txt\0";
-        responseText = kkp.generateResponse(stringFromClient);
+        responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("+filename.txt renamed to newFileName.txt", responseText);
     }
 
     @Test
     public void testGenerateResponseToRENAMECommandWithInvalidNewFileName(){
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
 
         File myObj = new File("filename.txt");
         try{
@@ -262,62 +262,62 @@ public class TCPServerTest {
         }
 
         String stringFromClient = "NAME filename.txt\0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("+File exists", responseText);
 
         stringFromClient = "TOBE existingFileName.txt\0";
-        responseText = kkp.generateResponse(stringFromClient);
+        responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("-File wasn't renamed because a file with the new name already exists", responseText);
     }
 
     @Test
     public void testGenerateResponseToDONECommand(){
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
 
         String stringFromClient = "DONE \0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("+Session closed", responseText);
     }
 
     @Test
     public void testGenerateResponseToCDIRCommandRequiringACCTAndPASS(){
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
 
         String stringFromClient = "USER user789\0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
 
         stringFromClient = "ACCT acct2\0";
-        responseText = kkp.generateResponse(stringFromClient);
+        responseText = rfcProtocol.generateResponse(stringFromClient);
 
         stringFromClient = "PASS pass1\0";
-        responseText = kkp.generateResponse(stringFromClient);
+        responseText = rfcProtocol.generateResponse(stringFromClient);
         assertEquals("! Logged in", responseText);
 
         stringFromClient = "CDIR \\src\0";
-        responseText = kkp.generateResponse(stringFromClient);
+        responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("+directory ok, send account/password", responseText);
 
         stringFromClient = "ACCT acct2\0";
-        responseText = kkp.generateResponse(stringFromClient);
+        responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("+account ok, send password", responseText);
 
         stringFromClient = "PASS pass1\0";
-        responseText = kkp.generateResponse(stringFromClient);
+        responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("!Changed working dir to \\src", responseText);
     }
 
     @Test
     public void testGenerateResponseToCDIRCommandRequiringNoCredentials(){
-        rfcProtocol kkp = new rfcProtocol();
+        rfcProtocol rfcProtocol = new rfcProtocol();
 
         String stringFromClient = "CDIR \\images\0";
-        String responseText = kkp.generateResponse(stringFromClient);
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("!Changed working dir to \\images", responseText);
     }

@@ -34,6 +34,7 @@ public class rfcProtocol {
     private static final int RETR = 13;
     private static final int STOP = 14;
     private static final int DONE = 15;
+    private static final int SEND = 16;
 
     private int state = WAITING;
 
@@ -391,6 +392,7 @@ public class rfcProtocol {
         while(state != STOP){
             return "";// 8 bits at a time
         }
+        return "-Error";
     }
 
     public String generateSTOPResponse(){
