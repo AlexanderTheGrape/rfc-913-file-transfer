@@ -22,10 +22,10 @@ public class TCPClient {
         int portNumber = Integer.parseInt(args[1]);
 
         try (
-                Socket kkSocket = new Socket(hostName, portNumber);
-                PrintWriter out = new PrintWriter(kkSocket.getOutputStream(), true);
+                Socket rfcSocket = new Socket(hostName, portNumber);
+                PrintWriter out = new PrintWriter(rfcSocket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(
-                        new InputStreamReader(kkSocket.getInputStream()));
+                        new InputStreamReader(rfcSocket.getInputStream()));
         ) {
             BufferedReader stdIn =
                     new BufferedReader(new InputStreamReader(System.in));
@@ -42,7 +42,7 @@ public class TCPClient {
 
                 System.out.println("Server: " + fromServer);
                 if (fromServer.equals("+Session closed")) {
-                    kkSocket.close();
+                    rfcSocket.close();
                     break;
                 }
 

@@ -35,6 +35,8 @@ The function names of test cases describe what each are for, often with more tha
 
 ![Test example](./images/capture7.png)
 
+The `stringFromClient` describes what is given by the user, and the `responseText` is what is outputted by the server via running the client input through the protocol. The `assertEquals` does verifying, and the expected output is contained in the quotation marks inside of it.
+![Example test](./images/capture8.png)
 
 ## Integration Tests
 
@@ -44,7 +46,7 @@ Two configurations need to be made, being for the client and server respectively
 
  ![Application](./images/capture5.png)
 
- The main class must then be selected (either client or server), and program arguments provided. In the case of the client, select main.client.TCPClient as the main class, and "localhost 1234" as the program arguments (being the target server address and port). When setting the server configurations as a separate configuration, it needs the corresponding main class for the server, and its program arguments only include the port. This port must be the same 4-digit number used in the client configuration.
+ The main class must then be selected (either client or server), and program arguments provided. In the case of the client, select main.client.TCPClient as the main class, and `localhost 1234` as the program arguments (being the target server address and port). When setting the server configurations as a separate configuration, it needs the corresponding main class for the server, and its program arguments only include the port. This port must be the same 4-digit number used in the client configuration.
 
  ![client configuration example](./images/capture6.png)
 

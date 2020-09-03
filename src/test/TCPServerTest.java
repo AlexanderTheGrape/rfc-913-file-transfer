@@ -167,8 +167,7 @@ public class TCPServerTest {
 //    }
 
     @Test
-    public void testGenerateResponseToKILLCommandWithCorrectFileName(){
-        TCPServer tcpServer = new TCPServer();
+    public void testGenerateResponseToKILLCommandWhenNotLoggedIn(){
         rfcProtocol rfcProtocol = new rfcProtocol();
 
         File myObj = new File("deleteMe.txt");
@@ -180,13 +179,38 @@ public class TCPServerTest {
 
         String stringFromClient = "KILL deleteMe.txt\0";
         String responseText = rfcProtocol.generateResponse(stringFromClient);
+
+        assertEquals("-ERROR: Not logged in", responseText);
+    }
+
+    @Test
+    public void testGenerateResponseToKILLCommandWithCorrectFileNameWhenLoggedIn(){
+        rfcProtocol rfcProtocol = new rfcProtocol();
+
+        String stringFromClient = "USER user123\0";
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
+        assertEquals("!user123 logged in", responseText);
+
+        File myObj = new File("deleteMe.txt");
+        try{
+            myObj.createNewFile();
+        } catch (Exception e){
+
+        }
+
+        stringFromClient = "KILL deleteMe.txt\0";
+        responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("+deleteMe.txt deleted", responseText);
     }
 
     @Test
-    public void testGenerateResponseToKILLCommandWithInvalidFileName(){
+    public void testGenerateResponseToKILLCommandWithInvalidFileNameWhenLoggedIn(){
         rfcProtocol rfcProtocol = new rfcProtocol();
+
+        String stringFromClient = "USER user123\0";
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
+        assertEquals("!user123 logged in", responseText);
 
         File myObj = new File("deleteMe.txt");
         try{
@@ -195,8 +219,8 @@ public class TCPServerTest {
 
         }
 
-        String stringFromClient = "KILL deleteMe.txt\0";
-        String responseText = rfcProtocol.generateResponse(stringFromClient);
+        stringFromClient = "KILL deleteMe.txt\0";
+        responseText = rfcProtocol.generateResponse(stringFromClient);
 
         // After deletion, we cannot delete the same again
         stringFromClient = "KILL deleteMe.txt\0";
@@ -205,18 +229,36 @@ public class TCPServerTest {
     }
 
     @Test
-    public void testGenerateResponseToRENAMECommandWithInvalidFileName(){
+    public void testGenerateResponseToNAMECommandWhenNotLoggedIn(){
         rfcProtocol rfcProtocol = new rfcProtocol();
 
-        String stringFromClient = "NAME notAValidFile.txt\0";
+        String stringFromClient = "NAME validFile.txt\0";
         String responseText = rfcProtocol.generateResponse(stringFromClient);
+
+        assertEquals("-ERROR: Not logged in", responseText);
+    }
+
+    @Test
+    public void testGenerateResponseToNAMECommandWithInvalidFileName(){
+        rfcProtocol rfcProtocol = new rfcProtocol();
+
+        String stringFromClient = "USER user123\0";
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
+        assertEquals("!user123 logged in", responseText);
+
+        stringFromClient = "NAME notAValidFile.txt\0";
+        responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("-Can't find notAValidFile.txt", responseText);
     }
 
     @Test
-    public void testGenerateResponseToRENAMECommandWithValidFileName(){
+    public void testGenerateResponseToNAMECommandWithValidFileName(){
         rfcProtocol rfcProtocol = new rfcProtocol();
+
+        String stringFromClient = "USER user123\0";
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
+        assertEquals("!user123 logged in", responseText);
 
         File myObj = new File("filename.txt");
         try{
@@ -233,8 +275,8 @@ public class TCPServerTest {
         } catch (Exception e){
         }
 
-        String stringFromClient = "NAME filename.txt\0";
-        String responseText = rfcProtocol.generateResponse(stringFromClient);
+        stringFromClient = "NAME filename.txt\0";
+        responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("+File exists", responseText);
 
@@ -245,8 +287,12 @@ public class TCPServerTest {
     }
 
     @Test
-    public void testGenerateResponseToRENAMECommandWithInvalidNewFileName(){
+    public void testGenerateResponseToNAMECommandWithInvalidNewFileName(){
         rfcProtocol rfcProtocol = new rfcProtocol();
+
+        String stringFromClient = "USER user123\0";
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
+        assertEquals("!user123 logged in", responseText);
 
         File myObj = new File("filename.txt");
         try{
@@ -261,8 +307,8 @@ public class TCPServerTest {
 
         }
 
-        String stringFromClient = "NAME filename.txt\0";
-        String responseText = rfcProtocol.generateResponse(stringFromClient);
+        stringFromClient = "NAME filename.txt\0";
+        responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("+File exists", responseText);
 
@@ -273,11 +319,25 @@ public class TCPServerTest {
     }
 
     @Test
-    public void testGenerateResponseToDONECommand(){
+    public void testGenerateResponseToDONECommandWhenNotLoggedIn(){
         rfcProtocol rfcProtocol = new rfcProtocol();
 
         String stringFromClient = "DONE \0";
         String responseText = rfcProtocol.generateResponse(stringFromClient);
+
+        assertEquals("-ERROR: Not logged in", responseText);
+    }
+
+    @Test
+    public void testGenerateResponseToDONECommand(){
+        rfcProtocol rfcProtocol = new rfcProtocol();
+
+        String stringFromClient = "USER user123\0";
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
+        assertEquals("!user123 logged in", responseText);
+
+        stringFromClient = "DONE \0";
+        responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("+Session closed", responseText);
     }
@@ -313,18 +373,68 @@ public class TCPServerTest {
     }
 
     @Test
-    public void testGenerateResponseToCDIRCommandRequiringNoCredentials(){
+    public void testGenerateResponseToCDIRCommandRequiringNoAdditionalCredentials(){
         rfcProtocol rfcProtocol = new rfcProtocol();
 
-        String stringFromClient = "CDIR \\images\0";
+        String stringFromClient = "USER user123\0";
         String responseText = rfcProtocol.generateResponse(stringFromClient);
+        assertEquals("!user123 logged in", responseText);
+
+        stringFromClient = "CDIR \\images\0";
+        responseText = rfcProtocol.generateResponse(stringFromClient);
 
         assertEquals("!Changed working dir to \\images", responseText);
     }
 
+    @Test
+    public void testGenerateResponseToRETRCommandWithInvalidFileName(){
+        rfcProtocol rfcProtocol = new rfcProtocol();
 
+        String stringFromClient = "USER user123\0";
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
+        assertEquals("!user123 logged in", responseText);
 
+        stringFromClient = "RETR \\invalidFile.txt\0";
+        responseText = rfcProtocol.generateResponse(stringFromClient);
 
+        assertEquals("-File doesn't exist", responseText);
+    }
 
+    @Test
+    public void testGenerateResponseToRETRCommandWithValidFileName(){
+        rfcProtocol rfcProtocol = new rfcProtocol();
+
+        String stringFromClient = "USER user123\0";
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
+        assertEquals("!user123 logged in", responseText);
+
+        stringFromClient = "RETR \\loginDetails.txt\0";
+        responseText = rfcProtocol.generateResponse(stringFromClient);
+
+        assertEquals("43", responseText); // <number-of-bytes-that-will-be-sent> -> 43 in this case
+    }
+
+    @Test
+    public void testGenerateResponseToSENDCommandWithValidFileName(){
+        rfcProtocol rfcProtocol = new rfcProtocol();
+
+        String stringFromClient = "USER user123\0";
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
+        assertEquals("!user123 logged in", responseText);
+
+        stringFromClient = "RETR \\loginDetails.txt\0";
+        responseText = rfcProtocol.generateResponse(stringFromClient);
+
+        assertEquals("43", responseText); // <number-of-bytes-that-will-be-sent> -> 43 in this case
+
+        stringFromClient = "SEND \0";
+        responseText = rfcProtocol.generateResponse(stringFromClient);
+
+        // ----------- NOTE: this is a set of 43 bytes sent separately, with each character being a byte,
+        //                  and will not pass this test. It is below for manual testing purposes (so you
+        //                  can see what the bytes should look like).
+        assertEquals("dXNlcjEyMw0KdXNlcjQ1NiBhY2N0MQ0KdXNlcjc4OSBhY2N0MiBwYXNzMQ==", responseText);
+
+    }
 
 }

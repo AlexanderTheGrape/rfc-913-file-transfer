@@ -73,6 +73,10 @@ public class rfcProtocol {
                 return generateCDIRResponse(args);
             case "RETR":
                 return generateRETRResponse(args);
+            case "SEND":
+                return generateSENDResponse();
+            case "STOP":
+                return generateSTOPResponse();
 
             default:
                 return "I don't know what command that is!";
@@ -180,6 +184,7 @@ public class rfcProtocol {
                                         return "+password ok, send account";
                                     }
                                 } else {
+                                    currentlyLoggedIn = true;
                                     return "! Logged in";
                                 }
                             } else if (this.currentAccount == null){
@@ -199,97 +204,109 @@ public class rfcProtocol {
 
     public String generateLISTResponse(String format){
         // Format is "F" or "V"
-        try {
-            if (format.equals("F")) {
-                // obtain the current directory
-                String absPath = System.getProperty("user.dir");
+        if (currentlyLoggedIn.equals(true)){
+            try {
+                if (format.equals("F")) {
+                    // obtain the current directory
+                    String absPath = System.getProperty("user.dir");
 
-                // Create a file object
-                File f = new File(absPath);
+                    // Create a file object
+                    File f = new File(absPath);
 
-                // Get all the names of the files present
-                // in the given directory
-                File[] files = f.listFiles();
+                    // Get all the names of the files present
+                    // in the given directory
+                    File[] files = f.listFiles();
 
-                String outputString = "+" + absPath + "\r";
-                if (files.length > 0){
-                    for (int i = 0; i < files.length; i++){
-                        outputString = outputString + "\n" + files[i].toString().replace(absPath + File.separator, "") + "\r";
-                    }
-                }
-                outputString = outputString + "\0";
-                return outputString;
-            } else if (format.equals("V")) {
-                // obtain the current directory
-                String absPath = System.getProperty("user.dir");
-
-                // Create a file object
-                File f = new File(absPath);
-
-                // Get all the names of the files present
-                // in the given directory
-                File[] files = f.listFiles();
-
-                String outputString = "+" + absPath + "\r";
-                if (files.length > 0){
-                    for (int i = 0; i < files.length; i++){
-                        // obtain file size, other details too
-                        String fileSize = valueOf(files[i].length());
-                        String lastModified = valueOf(files[i].lastModified());
-                        String canWrite;
-                        if (true ==files[i].canWrite()){
-                            canWrite = "writeable";
-                        } else {
-                            canWrite = "non-writeable";
+                    String outputString = "+" + absPath + "\r";
+                    if (files.length > 0){
+                        for (int i = 0; i < files.length; i++){
+                            outputString = outputString + "\n" + files[i].toString().replace(absPath + File.separator, "") + "\r";
                         }
-                        outputString = outputString + "\n" +
-                                files[i].toString().replace(absPath + File.separator, "") +
-                                "   file size: " + fileSize + "   " + canWrite +  "\r";
-
                     }
+                    outputString = outputString + "\0";
+                    return outputString;
+                } else if (format.equals("V")) {
+                    // obtain the current directory
+                    String absPath = System.getProperty("user.dir");
+
+                    // Create a file object
+                    File f = new File(absPath);
+
+                    // Get all the names of the files present
+                    // in the given directory
+                    File[] files = f.listFiles();
+
+                    String outputString = "+" + absPath + "\r";
+                    if (files.length > 0){
+                        for (int i = 0; i < files.length; i++){
+                            // obtain file size, other details too
+                            String fileSize = valueOf(files[i].length());
+                            String lastModified = valueOf(files[i].lastModified());
+                            String canWrite;
+                            if (true ==files[i].canWrite()){
+                                canWrite = "writeable";
+                            } else {
+                                canWrite = "non-writeable";
+                            }
+                            outputString = outputString + "\n" +
+                                    files[i].toString().replace(absPath + File.separator, "") +
+                                    "   file size: " + fileSize + "   " + canWrite +  "\r";
+
+                        }
+                    }
+                    outputString = outputString + "\0";
+                    return outputString;
                 }
-                outputString = outputString + "\0";
-                return outputString;
+            } catch(Exception e){
+                return "-" + e;
             }
-        } catch(Exception e){
-            return "-" + e;
+            return "-ERROR - F or V must be given";
+        } else {
+            return "-ERROR: Not logged in";
         }
-        return "-ERROR - F or V must be given";
     }
 
     public String generateKILLResponse(String fileSpec){
-        try{
-            //create file object from file
-            String absPath = System.getProperty("user.dir");
-            File f = new File(absPath + File.separator + fileSpec);
-
+        if (currentlyLoggedIn.equals(true)) {
             try {
-                Boolean exists = Files.deleteIfExists(f.toPath());
-                if (exists) {
-                    return "+" + fileSpec + " deleted";
-                } else {
-                    return "-Not deleted because file does not exist";
+                //create file object from file
+                String absPath = System.getProperty("user.dir");
+                File f = new File(absPath + File.separator + fileSpec);
+
+                try {
+                    Boolean exists = Files.deleteIfExists(f.toPath());
+                    if (exists) {
+                        return "+" + fileSpec + " deleted";
+                    } else {
+                        return "-Not deleted because file does not exist";
+                    }
+                } catch (Exception e) {
+                    return "-Not deleted because " + e.toString();
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
                 return "-Not deleted because " + e.toString();
             }
-        } catch(Exception e) {
-            return "-Not deleted because " + e.toString();
+        } else {
+            return "-ERROR: Not logged in";
         }
     }
 
     public String generateNAMEResponse(String oldFileSpec){
-        // check if the specified file exists
-        String absPath = System.getProperty("user.dir");
-        File f = new File(absPath + File.separator + oldFileSpec);
+        if (currentlyLoggedIn.equals(true)) {
+            // check if the specified file exists
+            String absPath = System.getProperty("user.dir");
+            File f = new File(absPath + File.separator + oldFileSpec);
 
-        Boolean fileExists = Files.exists(f.toPath());
-        if (fileExists) {
-            state = RENAMING;
-            this.ExistingOldFileSpec = oldFileSpec;
-            return "+File exists";
+            Boolean fileExists = Files.exists(f.toPath());
+            if (fileExists) {
+                state = RENAMING;
+                this.ExistingOldFileSpec = oldFileSpec;
+                return "+File exists";
+            } else {
+                return "-Can't find " + oldFileSpec;
+            }
         } else {
-            return "-Can't find " + oldFileSpec;
+            return "-ERROR: Not logged in";
         }
 
     }
@@ -319,84 +336,103 @@ public class rfcProtocol {
     }
 
     public String generateDoneResponse(String args){
-        state = DONE;
-        return "+Session closed";
+        if (currentlyLoggedIn.equals(true)) {
+            state = DONE;
+            return "+Session closed";
+        } else {
+            return "-ERROR: Not logged in";
+        }
     }
 
     public String generateCDIRResponse(String newDirectory){
-        // check if this was the last state
-        if (state != CDIRState){
-            this.currentAccount = null;
-            this.currentPassword = null;
-        }
+        if (currentlyLoggedIn.equals(true)) {
+            // check if this was the last state
+            if (state != CDIRState){
+                this.currentAccount = null;
+                this.currentPassword = null;
+            }
 
-        // set currentState to this
-        state = CDIRState;
-        this.newDirectoryToNavigate = newDirectory;
+            // set currentState to this
+            state = CDIRState;
+            this.newDirectoryToNavigate = newDirectory;
 
-        // check if directory is valid
-        String absPath = System.getProperty("user.dir");
-        Path path = Paths.get(absPath + newDirectory);
-        Boolean directoryValid = Files.exists(path);
+            // check if directory is valid
+            String absPath = System.getProperty("user.dir");
+            Path path = Paths.get(absPath + newDirectory);
+            Boolean directoryValid = Files.exists(path);
 
-        if (directoryValid){
-            Boolean validAccount = (null != currentAccount);
-            Boolean validPassword = (null != currentPassword);
+            if (directoryValid){
+                Boolean validAccount = (null != currentAccount);
+                Boolean validPassword = (null != currentPassword);
 
-            // Assume that directories need no extra credentials, but the \src directory needs
-            // both ACCT and PASS.
-            if (!newDirectory.equals("\\src")){
-                currentDirectory = currentDirectory + newDirectory;
-                return "!Changed working dir to " + newDirectory;
-            } else {
-                if (validAccount && validPassword) {
+                // Assume that directories need no extra credentials, but the \src directory needs
+                // both ACCT and PASS.
+                if (!newDirectory.equals("\\src")){
                     currentDirectory = currentDirectory + newDirectory;
                     return "!Changed working dir to " + newDirectory;
-                } else if (validAccount) {
-                    return "+account ok, send password";
-                } else if (validPassword) {
-                    return "+password ok, send account";
                 } else {
-                    return "+directory ok, send account/password";
+                    if (validAccount && validPassword) {
+                        currentDirectory = currentDirectory + newDirectory;
+                        return "!Changed working dir to " + newDirectory;
+                    } else if (validAccount) {
+                        return "+account ok, send password";
+                    } else if (validPassword) {
+                        return "+password ok, send account";
+                    } else {
+                        return "+directory ok, send account/password";
+                    }
                 }
+            } else {
+                return "-Can't connect to directory because directory is not valid";
             }
         } else {
-            return "-Can't connect to directory because directory is not valid";
+            return "-ERROR: Not logged in";
         }
     }
 
     public String generateRETRResponse(String fileSpecToSend){
+        if (currentlyLoggedIn.equals(true)) {
+            // create new file object with new name
+            File f = new File(currentDirectory + File.separator + fileSpecToSend);
+            // check if file exists
+            if (f.exists()) {
+                state = RETR;
+                try {
+                    bytes =  Files.readAllBytes(f.toPath());
+                } catch (Exception e){
+                    return e.toString();
+                }
 
-        // create new file object with new name
-        File f = new File(currentDirectory + File.separator + fileSpecToSend);
-        // check if file exists
-        if (f.exists()) {
-            state = RETR;
-            try {
-                bytes =  Files.readAllBytes(f.toPath());
-            } catch (Exception e){
-                return e.toString();
+                fileSize = bytes.length;
+                currentByte = 0;
+                return valueOf(fileSize); //TODO check if this number is given in bytes or kb (it needs to be bytes)
+            } else {
+                return "-File doesn't exist";
             }
-
-            fileSize = bytes.length;
-            currentByte = 0;
-            return valueOf(fileSize); //TODO check if this number is given in bytes or kb (it needs to be bytes)
         } else {
-            return "-File doesn't exist";
+            return "-ERROR: Not logged in";
         }
     }
 
     public String generateSENDResponse(){
-        // TODO send all the bytes in an 8-bit stream, and needs to be concurrent
-        state = SEND;
-        while(state != STOP){
-            return "";// 8 bits at a time
+        if (currentlyLoggedIn.equals(true)) {
+            // TODO send all the bytes in an 8-bit stream, and needs to be concurrent
+            state = SEND;
+            while(state != STOP){
+                return "";// 8 bits at a time
+            }
+            return "-Error";
+        } else {
+            return "-ERROR: Not logged in";
         }
-        return "-Error";
     }
 
     public String generateSTOPResponse(){
-        state = STOP;
-        return "+ok, RETR aborted";
+        if (currentlyLoggedIn.equals(true)) {
+            state = STOP;
+            return "+ok, RETR aborted";
+        } else {
+            return "-ERROR: Not logged in";
+        }
     }
 }
