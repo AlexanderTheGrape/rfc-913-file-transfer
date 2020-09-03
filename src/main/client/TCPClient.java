@@ -5,6 +5,8 @@ import java.net.*;
 public class TCPClient {
     private static final int userInput = 1;
     private static final int programmedInput = 2;
+    private static String programmedInputString;
+    private static String fromServer;
 
     private int MODE = 1;
 
@@ -27,7 +29,7 @@ public class TCPClient {
         ) {
             BufferedReader stdIn =
                     new BufferedReader(new InputStreamReader(System.in));
-            String fromServer;
+//            String fromServer;
             String fromUser;
 
             int mode = userInput;
@@ -52,7 +54,9 @@ public class TCPClient {
                         out.println(fromUser);
                     }
                 } else if (mode == programmedInput){
-                    if (lastProgrammedInput.equals("DONE ")) {
+                    System.out.println("Client: " + programmedInputString);
+                    out.println(programmedInputString);
+                    if (programmedInputString.equals("DONE ")) {
                         break;
                     }
                 }
@@ -71,10 +75,13 @@ public class TCPClient {
         this.MODE = MODE;
     }
 
-    public void sendCommand(String userInput){
-        String fromUser = generateCommandText(userInput.readLine());
-        System.out.println("Client: " + fromUser);
-        out.println(fromUser);
+    public String getFromServer(){
+        return fromServer;
+    }
+
+    public void sendProgrammedCommand(String userInput){
+        String fromUser = generateCommandText(userInput);
+        this.programmedInputString = fromUser;
     }
 
     public String generateUSERCommandText(String args){

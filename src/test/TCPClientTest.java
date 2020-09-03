@@ -1,6 +1,7 @@
 package test;
 
 import main.client.TCPClient;
+import main.rfcProtocol;
 import main.server.TCPServer;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -82,6 +83,15 @@ public class TCPClientTest {
 //        assertEquals("-Invalid user-id, try again", responseTextFromServer);
 //    }
 
+    @Test
+    public void testWholeSystemUSERCommand(){
+        TCPServer tcpServer = new TCPServer();
+        TCPClient tcpClient = new TCPClient();
+        tcpClient.setMode(2); // programmed input
 
+        tcpClient.sendProgrammedCommand("USER \0");
+        String responseText = tcpClient.getFromServer();
+        assertEquals("-Invalid user-id, try again", responseText);
+    }
 
 }
