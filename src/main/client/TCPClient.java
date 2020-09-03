@@ -34,37 +34,22 @@ public class TCPClient {
 
             int mode = userInput;
 
-            while (true) {
-                fromServer = in.readLine();
-                if (fromServer == null){
-                    break;
-                }
 
+            while ((fromServer = in.readLine()) != null) {
                 System.out.println("Server: " + fromServer);
                 if (fromServer.equals("+Session closed")) {
                     rfcSocket.close();
                     break;
                 }
 
-                if (mode == userInput){
-                    //fromUser = stdIn.readLine();
-                    fromUser = generateCommandText(stdIn.readLine());
-                    if (fromUser != null) {
-                        System.out.println("Client: " + fromUser);
-                        if (in.ready()){
-                            out.println(fromUser);
-                        }
-                    }
-                } else if (mode == programmedInput){
-                    System.out.println("Client: " + programmedInputString);
-                    if (in.ready()){
-                        out.println(programmedInputString);
-                    }
-                    if (programmedInputString.equals("DONE ")) {
-                        break;
-                    }
+                //fromUser = stdIn.readLine();
+                fromUser = generateCommandText(stdIn.readLine());
+                if (fromUser != null) {
+                    System.out.println("Client: " + fromUser);
+                    out.println(fromUser);
                 }
             }
+
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
             System.exit(1);

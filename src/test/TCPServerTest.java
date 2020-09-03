@@ -122,49 +122,82 @@ public class TCPServerTest {
         assertEquals("+Send account", responseText);
     }
 
-//    @Test
-//    public void testGenerateResponseToLISTCommandWithFArg(){
-//        TCPServer tcpServer = new TCPServer();
-//        rfcProtocol rfcProtocol = new rfcProtocol();
-//
-//        String stringFromClient = "LIST F\0";
-//        String responseText = rfcProtocol.generateResponse(stringFromClient);
-//
-//        assertEquals(
-//                "+C:\\Users\\Alex\\Documents\\Repos\\rfc-913-file-transfer\n" +
-//                ".git\n" +
-//                ".idea\n" +
-//                ".travis.yml\n" +
-//                "loginDetails.txt\n" +
-//                "out\n" +
-//                "README.md\n" +
-//                "rfc-913-file-transfer.iml\n" +
-//                "src"+
-//                "\0",
-//                responseText);
-//    }
+    @Test
+    public void testGenerateResponseToLISTCommandWhenNotLoggedIn(){
+        TCPServer tcpServer = new TCPServer();
+        rfcProtocol rfcProtocol = new rfcProtocol();
 
-//    @Test
-//    public void testGenerateResponseToLISTCommandWithVArg(){
-//        TCPServer tcpServer = new TCPServer();
-//        rfcProtocol rfcProtocol = new rfcProtocol();
-//
-//        String stringFromClient = "LIST V\0";
-//        String responseText = rfcProtocol.generateResponse(stringFromClient);
-//
-//        assertEquals(
-//                "+C:\\Users\\Alex\\Documents\\Repos\\rfc-913-file-transfer\n" +
-//                        ".git\n" +
-//                        ".idea\n" +
-//                        ".travis.yml 1kb\n" +
-//                        "loginDetails.txt\n" +
-//                        "out\n" +
-//                        "README.md\n" +
-//                        "rfc-913-file-transfer.iml\n" +
-//                        "src"+
-//                        "\0",
-//                responseText);
-//    }
+        String stringFromClient = "LIST F\0";
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
+
+        assertEquals(
+                "-ERROR: Not logged in",
+                responseText);
+    }
+
+    @Test
+    public void testGenerateResponseToLISTCommandWithFArg(){
+        TCPServer tcpServer = new TCPServer();
+        rfcProtocol rfcProtocol = new rfcProtocol();
+
+        String stringFromClient = "USER user123\0";
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
+        assertEquals("!user123 logged in", responseText);
+
+        stringFromClient = "LIST F\0";
+        responseText = rfcProtocol.generateResponse(stringFromClient);
+
+        assertEquals(
+                "+C:\\Users\\Alex\\Documents\\Repos\\rfc-913-file-transfer\n" +
+                        ".git\n" +
+                        ".idea\n" +
+                        ".travis.yml\n" +
+                        "deleteMe2.txt\n" +
+                        "existingFileName.txt\n" +
+                        "filename.txt\n" +
+                        "images\n" +
+                        "loginDetails.txt\n" +
+                        "newFileName.txt\n" +
+                        "out\n" +
+                        "README.md\n" +
+                        "renameMe.txt\n" +
+                        "rfc-913-file-transfer.iml\n" +
+                        "src\n",
+                responseText);
+    }
+
+    @Test
+    public void testGenerateResponseToLISTCommandWithVerboseArg(){
+        TCPServer tcpServer = new TCPServer();
+        rfcProtocol rfcProtocol = new rfcProtocol();
+
+        String stringFromClient = "USER user123\0";
+        String responseText = rfcProtocol.generateResponse(stringFromClient);
+        assertEquals("!user123 logged in", responseText);
+
+
+        stringFromClient = "LIST V\0";
+        responseText = rfcProtocol.generateResponse(stringFromClient);
+
+        // EXPECT SOMETHING LIKE THIS, BUT WITH SIZE IN BYTES AND IF EACH FILE IS WRITEABLE
+        assertEquals(
+                "+C:\\Users\\Alex\\Documents\\Repos\\rfc-913-file-transfer\n" +
+                        ".git\n" +
+                        ".idea\n" +
+                        ".travis.yml\n" +
+                        "deleteMe2.txt\n" +
+                        "existingFileName.txt\n" +
+                        "filename.txt\n" +
+                        "images\n" +
+                        "loginDetails.txt\n" +
+                        "newFileName.txt\n" +
+                        "out\n" +
+                        "README.md\n" +
+                        "renameMe.txt\n" +
+                        "rfc-913-file-transfer.iml\n" +
+                        "src\n",
+                responseText);
+    }
 
     @Test
     public void testGenerateResponseToKILLCommandWhenNotLoggedIn(){
