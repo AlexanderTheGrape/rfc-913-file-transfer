@@ -49,7 +49,7 @@ public class TCPClient {
                 if (mode == userInput){
                     //fromUser = stdIn.readLine();
                     fromUser = generateCommandText(stdIn.readLine());
-                    if (fromUser != null) {
+                    if ((fromUser != null) && fromServer.) {
                         System.out.println("Client: " + fromUser);
                         out.println(fromUser);
                     }
