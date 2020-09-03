@@ -310,7 +310,6 @@ public class TCPServerTest {
         responseText = kkp.generateResponse(stringFromClient);
 
         assertEquals("!Changed working dir to \\src", responseText);
-
     }
 
     @Test
@@ -320,6 +319,12 @@ public class TCPServerTest {
         String stringFromClient = "CDIR \\images\0";
         String responseText = kkp.generateResponse(stringFromClient);
 
-        assertEquals("!Changed working dir to \\src", responseText);
+        assertEquals("!Changed working dir to \\images", responseText);
     }
+
+
+
+
+
+
 }

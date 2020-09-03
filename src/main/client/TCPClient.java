@@ -3,6 +3,11 @@ import java.io.*;
 import java.net.*;
 
 public class TCPClient {
+    private static final int userInput = 1;
+    private static final int programmedInput = 2;
+
+    private int MODE = 1;
+
     public static void main(String[] args) throws IOException {
 
         if (args.length != 2) {
@@ -25,18 +30,31 @@ public class TCPClient {
             String fromServer;
             String fromUser;
 
-            while ((fromServer = in.readLine()) != null) {
+            int mode = userInput;
+
+            while (true) {
+                fromServer = in.readLine();
+                if (fromServer == null){
+                    break;
+                }
+
                 System.out.println("Server: " + fromServer);
                 if (fromServer.equals("+Session closed")) {
                     kkSocket.close();
                     break;
                 }
 
-                //fromUser = stdIn.readLine();
-                fromUser = generateCommandText(stdIn.readLine());
-                if (fromUser != null) {
-                    System.out.println("Client: " + fromUser);
-                    out.println(fromUser);
+                if (mode == userInput){
+                    //fromUser = stdIn.readLine();
+                    fromUser = generateCommandText(stdIn.readLine());
+                    if (fromUser != null) {
+                        System.out.println("Client: " + fromUser);
+                        out.println(fromUser);
+                    }
+                } else if (mode == programmedInput){
+                    if (lastProgrammedInput.equals("DONE ")) {
+                        break;
+                    }
                 }
             }
         } catch (UnknownHostException e) {
@@ -47,6 +65,16 @@ public class TCPClient {
                     hostName);
             System.exit(1);
         }
+    }
+
+    public void setMode(int MODE){
+        this.MODE = MODE;
+    }
+
+    public void sendCommand(String userInput){
+        String fromUser = generateCommandText(userInput.readLine());
+        System.out.println("Client: " + fromUser);
+        out.println(fromUser);
     }
 
     public String generateUSERCommandText(String args){

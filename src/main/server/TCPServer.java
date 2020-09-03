@@ -36,7 +36,9 @@ public class TCPServer{
             outputLine = kkp.generateResponse("");
             out.println(outputLine);
 
-            while ((inputLine = in.readLine()) != null) {
+//          while ((inputLine = in.readLine()) != null) {
+            while (outputLine != "+Session closed") {
+                inputLine = in.readLine();
                 //outputLine = kkp.processInput(inputLine);
                 outputLine = kkp.generateResponse(inputLine);
                 out.println(outputLine);

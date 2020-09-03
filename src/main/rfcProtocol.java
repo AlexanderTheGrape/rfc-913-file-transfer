@@ -125,7 +125,11 @@ public class rfcProtocol {
                             // Further requests will need to be made to log in (PASS)
                             this.currentAccount = account;
                             if (state == CDIRState){
-                                generateCDIRResponse(this.newDirectoryToNavigate);
+                                if (currentPassword != null){
+                                    return "!Changed working dir to " + newDirectoryToNavigate;
+                                } else {
+                                    return "+account ok, send password";
+                                }
                             } else {
                                 return "+Account valid, send password";
                             }
@@ -164,8 +168,12 @@ public class rfcProtocol {
                             String accTxt = splitString[1];
                             if (accTxt.equals(acc)) {
                                 this.currentlyLoggedIn = true;
-                                if (state == CDIRState) {
-                                    generateCDIRResponse(this.newDirectoryToNavigate);
+                                if (state == CDIRState){
+                                    if (currentAccount != null){
+                                        return "!Changed working dir to " + newDirectoryToNavigate;
+                                    } else {
+                                        return "+password ok, send account";
+                                    }
                                 } else {
                                     return "! Logged in";
                                 }
