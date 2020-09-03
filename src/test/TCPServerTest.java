@@ -469,5 +469,4 @@ public class TCPServerTest {
         assertEquals("dXNlcjEyMw0KdXNlcjQ1NiBhY2N0MQ0KdXNlcjc4OSBhY2N0MiBwYXNzMQ==", responseText);
 
     }
-
 }

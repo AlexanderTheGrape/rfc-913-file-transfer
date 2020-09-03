@@ -5,6 +5,8 @@
 ## Compilation Steps
 The recommended testing environment for this project implementation is [Intellij](https://www.jetbrains.com/idea/download/), and the procedure for testing will be described using this tool.
 
+It is recommended to read this README in a README viewer to see the linked images.
+
 There are a number of test cases as part of the TCPServerTest.java file, which can be run to show how the protocol run by the server responds to given text from the client. It assumes that the text from the client has been deserialised correctly and is in the form of a String. It is recommended to use these tests to quickly mark the majority of test cases. However, the procedure for testing the client and server for integration testing by running them both is also listed here for more thorough testing.
 
 The operating system used for testing/running the programs must be Windows, due to the directory naming conventions used.
@@ -36,6 +38,17 @@ The function names of test cases describe what each are for, often with more tha
 ![Test example](./images/capture7.png)
 
 The `stringFromClient` describes what is given by the user, and the `responseText` is what is outputted by the server via running the client input through the protocol. The `assertEquals` does verifying, and the expected output is contained in the quotation marks inside of it.
+
+`NOTE: the null terminator "\0" is added automatically.`
+
+So, for this example, the text to enter into the client would be:
+`CDIR \images`
+
+You would then press enter, then check that the output from the server is `!Changed working dir to \images`
+
+ If more `stringFromClient` occurances are present in a test, the process will still be the same by entering the next line, then receiving output, checking the next expected output, and repeat.
+
+
 ![Example test](./images/capture8.png)
 
 ## Integration Tests
@@ -78,3 +91,14 @@ Expected output:
 
 `-Not deleted because the file does not exist or the program does not have write permissions for this file`
 
+### LIST
+
+Corresponding tests: 
+
+`testGenerateResponseToLISTCommandWithFArg()`
+`testGenerateResponseToLISTCommandWithVerboseArg()`
+
+When ran using the Quick Tests, it fails these tests. The output is the same, with the exception of some extra character on the end causing it to fail. Please note the similarity for marking purposes.
+
+
+![similar results](./images/capture9.png)
