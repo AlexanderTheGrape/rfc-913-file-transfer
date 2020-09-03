@@ -21,6 +21,9 @@ public class rfcProtocol {
     private String ExistingOldFileSpec = "";
     private String currentDirectory = System.getProperty("user.dir");
     private String newDirectoryToNavigate = null;
+    private int fileSize;
+    private byte[] bytes;
+    private int currentByte;
 
     private static final int WAITING = 0;
     private static final int READY = 1;
@@ -210,9 +213,7 @@ public class rfcProtocol {
                 String outputString = "+" + absPath + "\r";
                 if (files.length > 0){
                     for (int i = 0; i < files.length; i++){
-
-                        outputString = outputString + "\n" + files[i].toString().replace(absPath + "\\", "") + "\r";
-
+                        outputString = outputString + "\n" + files[i].toString().replace(absPath + File.separator, "") + "\r";
                     }
                 }
                 outputString = outputString + "\0";
@@ -241,7 +242,7 @@ public class rfcProtocol {
                             canWrite = "non-writeable";
                         }
                         outputString = outputString + "\n" +
-                                files[i].toString().replace(absPath + "\\", "") +
+                                files[i].toString().replace(absPath + File.separator, "") +
                                 "   file size: " + fileSize + "   " + canWrite +  "\r";
 
                     }
@@ -259,7 +260,7 @@ public class rfcProtocol {
         try{
             //create file object from file
             String absPath = System.getProperty("user.dir");
-            File f = new File(absPath + "\\" + fileSpec);
+            File f = new File(absPath + File.separator + fileSpec);
 
             try {
                 Boolean exists = Files.deleteIfExists(f.toPath());
@@ -279,7 +280,7 @@ public class rfcProtocol {
     public String generateNAMEResponse(String oldFileSpec){
         // check if the specified file exists
         String absPath = System.getProperty("user.dir");
-        File f = new File(absPath + "\\" + oldFileSpec);
+        File f = new File(absPath + File.separator + oldFileSpec);
 
         Boolean fileExists = Files.exists(f.toPath());
         if (fileExists) {
@@ -294,10 +295,10 @@ public class rfcProtocol {
 
     public String generateTOBEResponse(String newFileSpec){
         if (state == RENAMING) {
-            File f = new File(currentDirectory + "\\" + ExistingOldFileSpec);
+            File f = new File(currentDirectory + File.separator + ExistingOldFileSpec);
 
             // create new file object with new name
-            File f2 = new File(currentDirectory + "\\" + newFileSpec);
+            File f2 = new File(currentDirectory + File.separator + newFileSpec);
             // check if file exists
             if (f2.exists()) {
                 return "-File wasn\'t renamed because a file with the new name already exists";
@@ -364,14 +365,21 @@ public class rfcProtocol {
     }
 
     public String generateRETRResponse(String fileSpecToSend){
-        // TODO check if the file exists
-        File f = ...
 
-        if (exists){
+        // create new file object with new name
+        File f = new File(currentDirectory + File.separator + fileSpecToSend);
+        // check if file exists
+        if (f.exists()) {
             state = RETR;
-            String fileSize = valueOf(f.length());
+            try {
+                bytes =  Files.readAllBytes(f.toPath());
+            } catch (Exception e){
+                return e.toString();
+            }
 
-            return fileSize; //TODO check if this number is given in bytes or kb (it needs to be bytes)
+            fileSize = bytes.length;
+            currentByte = 0;
+            return valueOf(fileSize); //TODO check if this number is given in bytes or kb (it needs to be bytes)
         } else {
             return "-File doesn't exist";
         }
@@ -379,6 +387,7 @@ public class rfcProtocol {
 
     public String generateSENDResponse(){
         // TODO send all the bytes in an 8-bit stream, and needs to be concurrent
+        state = SEND;
         while(state != STOP){
             return "";// 8 bits at a time
         }

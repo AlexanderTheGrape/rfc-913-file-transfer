@@ -49,13 +49,17 @@ public class TCPClient {
                 if (mode == userInput){
                     //fromUser = stdIn.readLine();
                     fromUser = generateCommandText(stdIn.readLine());
-                    if ((fromUser != null) && fromServer.) {
+                    if (fromUser != null) {
                         System.out.println("Client: " + fromUser);
-                        out.println(fromUser);
+                        if (in.ready()){
+                            out.println(fromUser);
+                        }
                     }
                 } else if (mode == programmedInput){
                     System.out.println("Client: " + programmedInputString);
-                    out.println(programmedInputString);
+                    if (in.ready()){
+                        out.println(programmedInputString);
+                    }
                     if (programmedInputString.equals("DONE ")) {
                         break;
                     }

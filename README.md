@@ -7,6 +7,8 @@ The recommended testing environment for this project implementation is [Intellij
 
 There are a number of test cases as part of the TCPServerTest.java file, which can be run to show how the protocol run by the server responds to given text from the client. It assumes that the text from the client has been deserialised correctly and is in the form of a String. It is recommended to use these tests to quickly mark the majority of test cases. However, the procedure for testing the client and server for integration testing by running them both is also listed here for more thorough testing.
 
+The operating system used for testing/running the programs must be Windows, due to the directory naming conventions used.
+
 ## Quick Tests
 The following instructions are for running the quick tests.
 
